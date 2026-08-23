@@ -1,0 +1,27 @@
+# Copy to ~/.config/slackchat/config.toml and edit. Every key is optional;
+# the values shown are the defaults.
+
+[provider]
+name  = "anthropic"
+model = "claude-haiku-4-5"
+
+[limits]
+# Correction only: fraction of input tokens allowed to change before the
+# output is treated as over-edited. Raising this weakens the project's
+# primary guarantee — tighten the prompt instead.
+max_changed_ratio = 0.25
+# Eval assertion only: len(output) / len(input) in words.
+max_length_ratio  = 1.5
+max_retries       = 1
+
+[cli]
+# Copy the result to the clipboard when stdout is a terminal.
+auto_copy = true
+
+[server]
+port = 8765
+# Leave unset to have a token generated into ~/.config/slackchat/server_token
+# on first `slackchat serve`.
+# token = "..."
+# Origins allowed to call the daemon from a browser. Empty means none.
+allowed_origins = []

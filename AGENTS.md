@@ -16,6 +16,9 @@ Run everything through `uv`; do not activate the venv by hand.
 - CLI: `uv run slackchat "text"`
 - Eval suite: `uv run slackchat eval`
 - Daemon: `uv run slackchat serve`
+- Review scoring: `uv run slackchat eval --review --limit 5`
+- Compare two prompt versions: `uv run slackchat eval --compare 1 2`
+- CI runs exactly: `uv sync --locked`, `uv run pytest -q`, `uv run lint-imports`
 
 Required order before claiming done: `uv run pytest` then `uv run lint-imports`.
 
@@ -41,6 +44,16 @@ Logging is done by `service.py` after `process()` returns, never inside
 - `ANTHROPIC_API_KEY` comes from the environment only. It never goes into a
   config file, a log row, or a test fixture.
 - Tests never hit the network. Inject `FakeProvider` from `tests/conftest.py`.
+
+## Config
+
+Defaults live in `src/slackchat/config.py`; `config.example.toml` documents
+them. The user's real config is `~/.config/slackchat/config.toml`. Tests must
+never touch it — use the `isolated_paths` fixture, which points
+`SLACKCHAT_CONFIG` and `SLACKCHAT_DB` at `tmp_path`.
+
+Raising `max_changed_ratio` to make an eval case pass is the wrong fix. The
+right fix is a tighter prompt and a bumped `version:`.
 
 ## The constraint that matters
 
