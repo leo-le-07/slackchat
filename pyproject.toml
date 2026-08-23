@@ -24,6 +24,9 @@ dev = [
 requires = ["uv_build>=0.9,<0.10"]
 build-backend = "uv_build"
 
+[tool.uv.build-backend]
+source-include = ["src/slackchat/prompts/*.md", "src/slackchat/store/*.sql", "src/slackchat/eval/*.md", "src/slackchat/eval/cases/*.yaml"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 
