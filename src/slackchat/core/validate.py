@@ -45,6 +45,11 @@ class Violation:
     instruction: str
 
 
+def has_emoji(text: str) -> bool:
+    """True if any emoji survives in ``text``. Used by the eval assertions."""
+    return _EMOJI_RE.search(text) is not None
+
+
 def sanitize(text: str) -> str:
     """Delete emoji, then tidy only the whitespace the deletion created.
 

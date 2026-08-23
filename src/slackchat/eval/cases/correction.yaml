@@ -1,0 +1,108 @@
+- id: noop-001
+  mode: correction
+  input: "The deployment failed because the config was missing."
+  assert: { unchanged: true }
+
+- id: noop-002
+  mode: correction
+  input: "Hi a @Kenny Trinh is there any progress on this so far?"
+  assert: { unchanged: true }
+
+- id: noop-003
+  mode: correction
+  input: "I have interview at 3:00 but please consider me as optional, thanks"
+  assert: { unchanged: true }
+
+- id: noop-004
+  mode: correction
+  input: "I'm afraid the Oracle here is the whole ERM which is bigger than the Oracle DB that Terry supports as DBA."
+  assert: { unchanged: true }
+
+- id: noop-005
+  mode: correction
+  input: "FYI we're forming a team to research how to register an account to get certified under CodeLink CPN."
+  assert: { unchanged: true }
+
+- id: noop-006
+  mode: correction
+  input: "For now, if we don't prioritise this, we can just announce the info so anyone in the company interested in getting Claude certs can consider it."
+  assert: { unchanged: true }
+
+- id: noop-007
+  mode: correction
+  input: "What's the cost to invite members? Is it free except for the fee to get the certs?"
+  assert: { unchanged: true }
+
+- id: noop-008
+  mode: correction
+  input: "In terms of scope, I guess around 1-2 hours. But of course, Truong can estimate better if needed."
+  assert: { unchanged: true }
+
+- id: noop-009
+  mode: correction
+  input: "3 services they mentioned seem larger and different in type compared to Copilot. We can reach out to Kieu Anh for further context if needed."
+  assert: { unchanged: true }
+
+- id: noop-010
+  mode: correction
+  input: "It costs 30 dollars — that is more than I expected."
+  assert:
+    unchanged: true
+  # The writer's own em dash. Removing it would itself be an over-edit.
+
+- id: fix-001
+  mode: correction
+  input: "I has finish the task yesterday."
+  assert:
+    output_contains_any: ["I finished", "I have finished"]
+    max_changed_ratio: 0.4
+
+- id: fix-002
+  mode: correction
+  input: "She's using her personal Claude, it's not suitable for ISO program."
+  assert:
+    output_contains_any: ["the ISO program"]
+    max_changed_ratio: 0.35
+
+- id: fix-003
+  mode: correction
+  input: "Is it okey to add more a?"
+  assert:
+    output_contains_any: ["okay"]
+    output_excludes: ["okey"]
+    max_changed_ratio: 0.5
+
+- id: fix-004
+  mode: correction
+  input: "Our current developers is using Claude Code plus Novita DeepSeek."
+  assert:
+    output_contains_any: ["developers are using"]
+    max_changed_ratio: 0.3
+
+- id: fix-005
+  mode: correction
+  input: "I intend to ask Truong help to collect cost for Dental project within July and Aug."
+  assert:
+    output_contains_any: ["to help", "help to collect the cost", "the cost"]
+    max_changed_ratio: 0.45
+
+- id: fix-006
+  mode: correction
+  input: "It would be nice if we could provide quick update, as Notion may not reflect the current status."
+  assert:
+    output_contains_any: ["quick updates"]
+    max_changed_ratio: 0.3
+
+- id: nobloat-001
+  mode: correction
+  input: "Any concerns?"
+  assert:
+    unchanged: true
+    max_words: 3
+
+- id: nobloat-002
+  mode: correction
+  input: "we can just announce the info"
+  assert:
+    output_excludes: ["I hope", "kindly", "at your earliest convenience", "please do not hesitate"]
+    max_changed_ratio: 0.4

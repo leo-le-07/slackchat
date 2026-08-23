@@ -11,6 +11,8 @@ from slackchat.cli.render import render_result
 from slackchat.cli.repl import run_session
 from slackchat.core.detect import detect
 from slackchat.core.types import EmptyInputError
+from slackchat.eval.runner import compare as eval_compare
+from slackchat.eval.runner import run_suite
 from slackchat.service import build_service
 from slackchat.store import sqlite as store
 
@@ -113,6 +115,17 @@ def _cmd_log(argv: list[str]) -> int:
     return EXIT_OK
 
 
+def _cmd_eval(argv: list[str]) -> int:
+    parser = argparse.ArgumentParser(prog="slackchat eval")
+    parser.add_argument("--compare", nargs=2, metavar=("A", "B"), default=None)
+    args = parser.parse_args(argv)
+
+    if args.compare:
+        return eval_compare(args.compare[0], args.compare[1])
+    run_suite(build_service())
+    return EXIT_OK
+
+
 def _one_line(text: str, width: int = 100) -> str:
     collapsed = " ".join(text.split())
     return collapsed if len(collapsed) <= width else collapsed[: width - 1] + "…"
@@ -127,6 +140,8 @@ def main(argv: list[str] | None = None) -> int:
             return _cmd_detect(rest)
         if command == "log":
             return _cmd_log(rest)
+        if command == "eval":
+            return _cmd_eval(rest)
         print(f"slackchat: '{command}' is not implemented yet", file=sys.stderr)
         return EXIT_USAGE
 
