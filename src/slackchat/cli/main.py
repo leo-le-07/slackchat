@@ -145,6 +145,14 @@ def _cmd_eval(argv: list[str]) -> int:
     return EXIT_OK
 
 
+def _cmd_serve(argv: list[str]) -> int:
+    parser = argparse.ArgumentParser(prog="slackchat serve")
+    parser.parse_args(argv)
+    from slackchat.server.app import serve
+
+    return serve()
+
+
 def _one_line(text: str, width: int = 100) -> str:
     collapsed = " ".join(text.split())
     return collapsed if len(collapsed) <= width else collapsed[: width - 1] + "…"
@@ -161,8 +169,9 @@ def main(argv: list[str] | None = None) -> int:
             return _cmd_log(rest)
         if command == "eval":
             return _cmd_eval(rest)
-        print(f"slackchat: '{command}' is not implemented yet", file=sys.stderr)
-        return EXIT_USAGE
+        if command == "serve":
+            return _cmd_serve(rest)
+        raise AssertionError(f"unrouted subcommand {command!r}")
 
     parsed = _oneshot_parser().parse_args(args)
 
