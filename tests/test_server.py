@@ -80,11 +80,11 @@ def test_the_json_shape_matches_what_the_cli_saw(client):
 
 
 def test_an_explicit_mode_is_honoured(client):
-    api, _ = client(["I am done."])
+    api, _ = client(["I am done.", "I am done."])
     body = api.post(
-        "/process", json={"text": "Tôi đã xong", "mode": "translation"}, headers=_headers()
+        "/process", json={"text": "Tôi đã xong", "mode": "correction"}, headers=_headers()
     ).json()
-    assert body["mode"] == "translation"
+    assert body["mode"] == "correction"
     assert body["forced"] is True
 
 
