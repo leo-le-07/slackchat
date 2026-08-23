@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import sys
 
+from slackchat.cli.clipboard import copy as copy_to_clipboard
 from slackchat.cli.render import render_result
 from slackchat.core.detect import detect
 from slackchat.core.types import EmptyInputError
@@ -66,6 +67,10 @@ def _run_oneshot(text: str, *, mode: str | None, raw: bool) -> int:
     if result.error:
         print(f"slackchat: {result.error}", file=sys.stderr)
         return EXIT_PROVIDER_ERROR
+
+    if _stdout_is_tty() and service.config.cli.auto_copy and result.output:
+        if copy_to_clipboard(result.output):
+            print("(copied to clipboard)")
     return EXIT_OK
 
 
