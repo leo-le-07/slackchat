@@ -1,0 +1,64 @@
+[project]
+name = "slackchat"
+version = "0.1.0"
+description = "Local English correction and Vietnamese-to-English translation"
+requires-python = ">=3.14"
+dependencies = [
+    "anthropic>=1.0.0",
+    "fastapi>=0.141.1",
+    "uvicorn>=0.52.4",
+    "pyyaml>=6.0.3",
+]
+
+[project.scripts]
+slackchat = "slackchat.cli.main:main"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+    "import-linter>=2.13",
+    "httpx>=0.28.1",
+]
+
+[build-system]
+requires = ["uv_build>=0.9,<0.10"]
+build-backend = "uv_build"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.importlinter]
+root_package = "slackchat"
+
+[[tool.importlinter.contracts]]
+name = "core does not depend on outer layers"
+type = "forbidden"
+source_modules = ["slackchat.core"]
+forbidden_modules = [
+    "slackchat.cli",
+    "slackchat.server",
+    "slackchat.eval",
+    "slackchat.store",
+    "slackchat.service",
+    "slackchat.config",
+]
+
+[[tool.importlinter.contracts]]
+name = "core reaches providers only through the protocol"
+type = "forbidden"
+source_modules = ["slackchat.core"]
+forbidden_modules = ["slackchat.providers.anthropic", "slackchat.providers.pricing"]
+
+[[tool.importlinter.contracts]]
+name = "providers do not depend on outer layers"
+type = "forbidden"
+source_modules = ["slackchat.providers"]
+forbidden_modules = [
+    "slackchat.cli",
+    "slackchat.server",
+    "slackchat.eval",
+    "slackchat.store",
+    "slackchat.service",
+    "slackchat.config",
+    "slackchat.core",
+]
