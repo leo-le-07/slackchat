@@ -9,8 +9,10 @@ import sys
 from slackchat.cli.clipboard import copy as copy_to_clipboard
 from slackchat.cli.render import render_result
 from slackchat.cli.repl import run_session
+from slackchat.config import utc_now
 from slackchat.core.detect import detect
 from slackchat.core.types import EmptyInputError
+from slackchat.eval.review import review_session
 from slackchat.eval.runner import compare as eval_compare
 from slackchat.eval.runner import run_suite
 from slackchat.service import build_service
@@ -118,10 +120,27 @@ def _cmd_log(argv: list[str]) -> int:
 def _cmd_eval(argv: list[str]) -> int:
     parser = argparse.ArgumentParser(prog="slackchat eval")
     parser.add_argument("--compare", nargs=2, metavar=("A", "B"), default=None)
+    parser.add_argument("--review", action="store_true")
+    parser.add_argument("--limit", type=int, default=20, help="runs to review")
     args = parser.parse_args(argv)
 
     if args.compare:
         return eval_compare(args.compare[0], args.compare[1])
+
+    if args.review:
+        conn = store.connect()
+        try:
+            review_session(
+                conn,
+                limit=args.limit,
+                read_line=input,
+                write=lambda chunk: print(chunk, end=""),
+                clock=utc_now,
+            )
+        finally:
+            conn.close()
+        return EXIT_OK
+
     run_suite(build_service())
     return EXIT_OK
 

@@ -69,6 +69,13 @@ def db_path() -> Path:
     return _xdg("XDG_DATA_HOME", ".local/share") / "slackchat" / "runs.db"
 
 
+def utc_now() -> str:
+    """ISO8601 UTC, second precision, ``Z`` suffix. Matches Result.created_at."""
+    from datetime import UTC, datetime
+
+    return datetime.now(UTC).isoformat(timespec="seconds").replace("+00:00", "Z")
+
+
 def load_config(path: Path | None = None) -> Config:
     """Read config from ``path`` (default: :func:`config_path`).
 
