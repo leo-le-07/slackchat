@@ -7,6 +7,7 @@ import sys
 
 from slackchat.cli.clipboard import copy as copy_to_clipboard
 from slackchat.cli.render import render_result
+from slackchat.cli.repl import run_session
 from slackchat.core.detect import detect
 from slackchat.core.types import EmptyInputError
 from slackchat.service import build_service
@@ -100,8 +101,14 @@ def main(argv: list[str] | None = None) -> int:
     if not _stdin_is_tty():
         return _run_oneshot(_read_stdin().strip("\n"), mode=parsed.mode, raw=parsed.raw)
 
-    print("slackchat: interactive session arrives in a later task", file=sys.stderr)
-    return EXIT_USAGE
+    service = build_service()
+    return run_session(
+        service,
+        read_line=input,
+        write=lambda chunk: print(chunk, end=""),
+        color=_stdout_is_tty(),
+        copy_fn=copy_to_clipboard if _stdout_is_tty() else (lambda _text: False),
+    )
 
 
 if __name__ == "__main__":  # pragma: no cover
