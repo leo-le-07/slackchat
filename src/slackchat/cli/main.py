@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 
 from slackchat.cli.clipboard import copy as copy_to_clipboard
@@ -11,6 +12,7 @@ from slackchat.cli.repl import run_session
 from slackchat.core.detect import detect
 from slackchat.core.types import EmptyInputError
 from slackchat.service import build_service
+from slackchat.store import sqlite as store
 
 EXIT_OK = 0
 EXIT_EMPTY_INPUT = 1
@@ -83,6 +85,39 @@ def _cmd_detect(argv: list[str]) -> int:
     return EXIT_OK
 
 
+def _cmd_log(argv: list[str]) -> int:
+    parser = argparse.ArgumentParser(prog="slackchat log")
+    parser.add_argument("--last", type=int, default=20)
+    parser.add_argument("--mode", choices=["correction", "translation"], default=None)
+    args = parser.parse_args(argv)
+
+    conn = store.connect()
+    try:
+        rows = store.recent_runs(conn, limit=args.last, mode=args.mode)
+    finally:
+        conn.close()
+
+    if not rows:
+        print("no runs logged yet")
+        return EXIT_OK
+
+    for row in rows:
+        flags = ",".join(json.loads(row["flags"] or "[]")) or "-"
+        cost = f"${row['cost_usd']:.6f}" if row["cost_usd"] is not None else "n/a"
+        print(
+            f"{row['created_at']}  {row['client']:<6} {row['mode']:<11} "
+            f"{row['changed_ratio']:>6.2f}  {cost:>10}  {flags}"
+        )
+        print(f"    in : {_one_line(row['input'])}")
+        print(f"    out: {_one_line(row['output'])}")
+    return EXIT_OK
+
+
+def _one_line(text: str, width: int = 100) -> str:
+    collapsed = " ".join(text.split())
+    return collapsed if len(collapsed) <= width else collapsed[: width - 1] + "…"
+
+
 def main(argv: list[str] | None = None) -> int:
     args = list(sys.argv[1:] if argv is None else argv)
 
@@ -90,6 +125,8 @@ def main(argv: list[str] | None = None) -> int:
         command, rest = args[0], args[1:]
         if command == "detect":
             return _cmd_detect(rest)
+        if command == "log":
+            return _cmd_log(rest)
         print(f"slackchat: '{command}' is not implemented yet", file=sys.stderr)
         return EXIT_USAGE
 

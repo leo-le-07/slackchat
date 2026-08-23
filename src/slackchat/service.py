@@ -15,6 +15,7 @@ from slackchat.core.prompts import Prompt, load_prompt
 from slackchat.core.types import Mode, Result
 from slackchat.providers.base import Provider
 from slackchat.providers.pricing import cost_usd
+from slackchat.store import sqlite as store
 
 
 class UnknownProviderError(RuntimeError):
@@ -37,14 +38,13 @@ class Service:
     provider: Provider
 
     def run(self, text: str, mode: Mode | None = None, *, client: str) -> Result:
-        """Process ``text`` and return the Result.
+        """Process ``text``, log the outcome, return the Result.
 
-        ``client`` records which surface asked (``cli``, ``server``, ``eval``).
-        It is unused until Task 11 adds the log write, and it is required now
-        so that no caller can be added later without declaring itself.
+        Logging lives here and nowhere else: ``core/`` must not know about a
+        database, and duplicating the write per caller is how a caller ends up
+        silently unlogged.
         """
-        del client  # used by the logging added in Task 11
-        return process(
+        result = process(
             text,
             mode,
             provider=self.provider,
@@ -53,6 +53,12 @@ class Service:
             prompt=self._prompt_for(text, mode),
             cost_fn=cost_usd,
         )
+        conn = store.connect()
+        try:
+            store.insert_run(conn, result, client=client)
+        finally:
+            conn.close()
+        return result
 
     def _prompt_for(self, text: str, mode: Mode | None) -> Prompt | None:
         # Let the pipeline detect and load, unless the mode is already known.
