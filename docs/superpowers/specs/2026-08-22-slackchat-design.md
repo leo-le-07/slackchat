@@ -171,7 +171,7 @@ class Result:
 
 Ba file markdown trong `prompts/`. Mỗi file có frontmatter `version:`.
 
-`voice.md` là ràng buộc giọng văn dùng chung, được chèn vào cả hai prompt. **Nội dung file này do người dùng cung cấp** — đây là input bắt buộc trước khi implement slice 2, không phải thứ được suy đoán.
+`voice.md` là ràng buộc giọng văn dùng chung, được chèn vào cả hai prompt qua placeholder `{{VOICE}}`. Nội dung do người dùng cung cấp (2026-08-22) và được ghi nguyên văn, không diễn giải lại: quy tắc định dạng, danh sách từ/cụm cần cắt bỏ, bảng thay thế, mẫu cấu trúc, và non-goals.
 
 Prompt "resolved" là template đã chèn `voice.md`. Mỗi lần chạy log **cả hai**:
 
@@ -308,7 +308,16 @@ Phase 1 chỉ có `AnthropicProvider`. Local model về sau là một class kho�
 
 Cost tính từ bảng giá trong `providers/pricing.py`, keyed theo model id. Đây là **dữ liệu**, không phải logic, để sửa được khi giá thay đổi.
 
-**Cần giải quyết lúc implement slice 2:** tra tài liệu Anthropic để lấy model id chính xác của Haiku và đơn giá hiện hành, rồi ghi vào config mặc định và `pricing.py`. Không đoán giá trị này.
+**Giá trị đã tra cứu** (Anthropic docs, 2026-08-22):
+
+| Mục | Giá trị |
+|---|---|
+| Model ID đầy đủ | `claude-haiku-4-5-20251001` |
+| Alias | `claude-haiku-4-5` |
+| Giá input | $1 / triệu token |
+| Giá output | $5 / triệu token |
+
+Config mặc định dùng **alias** cho ngắn gọn. Bảng giá trong `pricing.py` key theo **model id đầy đủ có ngày**, vì đó là giá trị Anthropic trả về trong field `model` của response — phải khớp đúng cái đó thì `cost_usd` mới đúng, không phải chuỗi người dùng gõ trong config.
 
 ### Config
 
@@ -317,12 +326,15 @@ Cost tính từ bảng giá trong `providers/pricing.py`, keyed theo model id. �
 ```toml
 [provider]
 name  = "anthropic"
-model = "<model id, xác định lúc implement slice 2>"
+model = "claude-haiku-4-5"
 
 [limits]
 max_changed_ratio = 0.25   # correction: tỉ lệ token bị đổi tối đa
 max_length_ratio  = 1.5    # len(output) / len(input) tối đa, tính theo từ
 max_retries       = 1
+
+[cli]
+auto_copy = true           # chỉ áp dụng cho CLI, server không liên quan
 
 [server]
 port = 8765
@@ -333,8 +345,8 @@ API key đọc từ biến môi trường `ANTHROPIC_API_KEY`. Không bao giờ 
 ## 10. Bề mặt CLI
 
 ```
-slackchat "text"                  # auto-detect, in kèm diff màu
-slackchat                         # đọc stdin
+slackchat "text"                  # one-shot: auto-detect, in diff màu, thoát
+slackchat                         # tty  → REPL session; pipe → batch một lần
 slackchat --mode translation ...  # ép mode
 slackchat --raw                   # text trần, để | pbcopy
 slackchat detect "text"           # chỉ in mode, không gọi API
@@ -342,6 +354,34 @@ slackchat log [--last N] [--mode M]
 slackchat eval [--compare A B] [--review]
 slackchat serve
 ```
+
+### 10.1 Hai chế độ chạy
+
+**One-shot** — `slackchat "text"`. Xử lý, in kết quả, thoát.
+
+**Session (REPL)** — `slackchat` không đối số **và** `sys.stdin.isatty()` là true. Vào vòng lặp nhập/xuất liên tục.
+
+Nếu không có đối số nhưng stdin bị pipe (`cat f.txt | slackchat`), giữ hành vi batch: đọc hết stdin, xử lý một lần, thoát. Không vào REPL vì không có ai ngồi gõ tiếp.
+
+### 10.2 Hành vi REPL
+
+- Banner ASCII wordmark `SLACKCHAT` in một lần khi vào, kèm một dòng hint dim gray `Ctrl+D or /exit to quit`. Font bitmap hardcode trong `cli/banner.py`, không thêm dependency.
+- Prompt chính `> `. Sau dòng đầu, prompt các dòng tiếp là `... ` để báo đang ở giữa input nhiều dòng.
+- **Dòng trống kết thúc một lượt nhập.** Toàn bộ các dòng đã gõ được nối bằng `\n` và gửi làm một input duy nhất. Điều này cho phép dán đoạn nhiều dòng mà không bị cắt nhỏ.
+- Enter trên dòng trống khi chưa gõ gì → bỏ qua lặng lẽ, hiện lại prompt, không tạo `run`, không báo lỗi.
+- `/exit` hoặc `/quit` rồi Enter, ở **bất kỳ lúc nào** kể cả giữa input đang gõ dở → thoát ngay, không chờ dòng trống.
+- Ctrl+D (EOF) hoặc Ctrl+C → thoát ngay.
+- Mỗi lượt là một dòng riêng trong `runs` với `client='cli'`. Không có khái niệm `session_id` ở Phase 1.
+
+### 10.3 Clipboard
+
+Sau khi in kết quả, nếu `sys.stdout.isatty()` là true **và** `cli.auto_copy` là true, copy `Result.output` (text sạch, không phải bản có mã màu diff) vào clipboard bằng `pbcopy`, rồi in dòng xác nhận `(copied to clipboard)`.
+
+Khi stdout bị pipe hoặc redirect thì bỏ qua hoàn toàn cả việc copy lẫn dòng xác nhận, giữ nguyên pattern `slackchat "..." --raw | pbcopy` thủ công và không làm bẩn output.
+
+Không có cờ `--copy`/`--no-copy`. Muốn tắt hẳn thì sửa `cli.auto_copy` trong config.
+
+Đây là hành vi **chỉ của CLI**. `core/` không biết gì về clipboard; `cli/clipboard.py` gọi `pbcopy` qua `subprocess`. Phụ thuộc macOS, chấp nhận được cho Phase 1.
 
 ## 11. Server (Phase 1, chuẩn bị cho Phase 2)
 
@@ -361,15 +401,16 @@ Mỗi slice kết thúc bằng test xanh và một cách verify thủ công.
 |---|---|---|
 | 1 | `detect` | Chạy trên bảng mẫu VN/EN có cả `café`, `résumé`. Không cần API key. |
 | 2 | `correct` | `slackchat "I has finish"` trả text đã sửa |
-| 3 | Diff render + `--raw` | Nhìn output màu; `--raw \| pbcopy` |
-| 4 | `translate` + auto-route | Gõ hai câu hai thứ tiếng, đúng mode chạy |
-| 5 | Validate + retry + flags | Dựng input cố tình phá, thấy cờ bật |
-| 6 | Logging | Chạy 3 lệnh, query `runs.db` |
-| 7 | Eval assertions | `slackchat eval` in pass rate |
-| 8 | Rubric + `--review` | Chấm 5 case, query bảng `reviews` |
-| 9 | `serve` | `curl` ra đúng JSON như CLI |
+| 3 | Diff render + `--raw` + auto-copy | Nhìn output màu; `--raw \| pbcopy`; redirect ra file thì không tự copy |
+| 4 | REPL session + banner | `slackchat` hiện banner, gõ nhiều lượt, dán đoạn nhiều dòng, `/exit` thoát |
+| 5 | `translate` + auto-route | Gõ hai câu hai thứ tiếng, đúng mode chạy |
+| 6 | Validate + retry + flags | Dựng input cố tình phá, thấy cờ bật |
+| 7 | Logging | Chạy 3 lệnh, query `runs.db` |
+| 8 | Eval assertions | `slackchat eval` in pass rate |
+| 9 | Rubric + `--review` | Chấm 5 case, query bảng `reviews` |
+| 10 | `serve` | `curl` ra đúng JSON như CLI |
 
-Slice 1 và 3 chạy được không cần API key.
+Slice 1 và 4 chạy được không cần API key (slice 4 verify được phần banner, prompt, multi-line, thoát — phần gọi model dùng mock).
 
 ## 13. Tech stack
 
@@ -379,10 +420,12 @@ Slice 1 và 3 chạy được không cần API key.
 - `pytest` cho test, `import-linter` cho ràng buộc kiến trúc
 - Extension Phase 2 dùng JS, nằm trong `extension/` cùng repo
 
-## 14. Phụ thuộc bên ngoài cần giải quyết
+## 14. Phụ thuộc bên ngoài
 
-1. **Nội dung `voice.md`** — người dùng cung cấp. Chặn slice 2.
-2. **Model id và đơn giá Haiku** — tra tài liệu Anthropic lúc làm slice 2.
+Cả hai phụ thuộc đã được giải quyết trước khi lập implementation plan:
+
+1. **Nội dung `voice.md`** — người dùng đã cung cấp 2026-08-22. Nội dung gốc được ghi nguyên văn vào `prompts/voice.md`.
+2. **Model id và đơn giá Haiku** — đã tra tài liệu Anthropic, xem bảng ở §9.
 
 ## 15. Ngoài phạm vi Phase 1
 
