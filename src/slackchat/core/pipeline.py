@@ -146,6 +146,7 @@ def process(
         attempt += 1
         suffix = retry_suffix(violations)
 
+    # TODO: refactor to prevent calling cost_fn twice
     if cost_fn(completion.model, completion.input_tokens, completion.output_tokens) is None:
         flags.append(FLAG_UNKNOWN_PRICING)
     cost = cost_fn(completion.model, completion.input_tokens, completion.output_tokens)
