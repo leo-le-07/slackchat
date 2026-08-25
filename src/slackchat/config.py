@@ -42,17 +42,12 @@ class Config:
     server: ServerConfig = ServerConfig()
 
 
-def _xdg(env_var: str, fallback: str) -> Path:
-    raw = os.environ.get(env_var)
-    return Path(raw) if raw else Path.home() / fallback
-
-
 def config_dir() -> Path:
     """Directory holding config.toml and the server token file."""
     explicit = os.environ.get("SLACKCHAT_CONFIG")
     if explicit:
         return Path(explicit).parent
-    return _xdg("XDG_CONFIG_HOME", ".config") / "slackchat"
+    return Path.cwd() / ".config"
 
 
 def config_path() -> Path:
@@ -66,7 +61,7 @@ def db_path() -> Path:
     explicit = os.environ.get("SLACKCHAT_DB")
     if explicit:
         return Path(explicit)
-    return _xdg("XDG_DATA_HOME", ".local/share") / "slackchat" / "runs.db"
+    return Path.cwd() / "data" / "runs.db"
 
 
 def load_dotenv(path: Path | None = None) -> None:

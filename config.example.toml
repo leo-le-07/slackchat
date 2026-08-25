@@ -1,5 +1,5 @@
-# Copy to ~/.config/slackchat/config.toml and edit. Every key is optional;
-# the values shown are the defaults.
+# Copy to .config/config.toml (relative to the project root) and edit.
+# Every key is optional; the values shown are the defaults.
 
 [provider]
 name  = "anthropic"
@@ -20,7 +20,7 @@ auto_copy = true
 
 [server]
 port = 8765
-# Leave unset to have a token generated into ~/.config/slackchat/server_token
+# Leave unset to have a token generated into .config/server_token
 # on first `slackchat serve`.
 # token = "..."
 # Origins allowed to call the daemon from a browser. Empty means none.

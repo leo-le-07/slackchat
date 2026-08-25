@@ -65,10 +65,10 @@ def test_config_path_honours_env(monkeypatch, tmp_path):
     assert cfg.config_path() == tmp_path / "x" / "c.toml"
 
 
-def test_config_path_honours_xdg(monkeypatch, tmp_path):
+def test_config_path_default_location(monkeypatch, tmp_path):
     monkeypatch.delenv("SLACKCHAT_CONFIG", raising=False)
-    monkeypatch.setenv("XDG_CONFIG_HOME", str(tmp_path))
-    assert cfg.config_path() == tmp_path / "slackchat" / "config.toml"
+    monkeypatch.chdir(tmp_path)
+    assert cfg.config_path() == tmp_path / ".config" / "config.toml"
 
 
 def test_db_path_honours_env(monkeypatch, tmp_path):
@@ -78,8 +78,8 @@ def test_db_path_honours_env(monkeypatch, tmp_path):
 
 def test_db_path_default_location(monkeypatch, tmp_path):
     monkeypatch.delenv("SLACKCHAT_DB", raising=False)
-    monkeypatch.setenv("XDG_DATA_HOME", str(tmp_path))
-    assert cfg.db_path() == tmp_path / "slackchat" / "runs.db"
+    monkeypatch.chdir(tmp_path)
+    assert cfg.db_path() == tmp_path / "data" / "runs.db"
 
 
 def test_malformed_toml_raises_with_the_path_in_the_message(tmp_path):

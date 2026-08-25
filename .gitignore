@@ -3,3 +3,5 @@ __pycache__/
 .venv/
 .env
 .claude/settings.local.json
+.config/
+data/
