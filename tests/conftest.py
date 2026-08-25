@@ -77,7 +77,8 @@ def limits():
 
 @pytest.fixture
 def isolated_paths(tmp_path, monkeypatch):
-    """Keep every test off the real ~/.config and ~/.local/share."""
+    """Keep every test off the real ~/.config, ~/.local/share and .env."""
+    monkeypatch.chdir(tmp_path)
     monkeypatch.setenv("SLACKCHAT_CONFIG", str(tmp_path / "config" / "config.toml"))
     monkeypatch.setenv("SLACKCHAT_DB", str(tmp_path / "data" / "runs.db"))
     monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)

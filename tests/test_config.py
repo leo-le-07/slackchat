@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 import pytest
@@ -87,3 +88,55 @@ def test_malformed_toml_raises_with_the_path_in_the_message(tmp_path):
     with pytest.raises(cfg.ConfigError) as excinfo:
         cfg.load_config(p)
     assert str(p) in str(excinfo.value)
+
+
+def test_dotenv_sets_a_missing_var(tmp_path, monkeypatch):
+    monkeypatch.delenv("SLACKCHAT_TEST_KEY", raising=False)
+    p = tmp_path / ".env"
+    p.write_text("SLACKCHAT_TEST_KEY=hello\n", encoding="utf-8")
+    cfg.load_dotenv(p)
+    assert os.environ["SLACKCHAT_TEST_KEY"] == "hello"
+
+
+def test_dotenv_ignores_blank_lines_and_comments(tmp_path, monkeypatch):
+    monkeypatch.delenv("SLACKCHAT_TEST_KEY", raising=False)
+    p = tmp_path / ".env"
+    p.write_text("\n# a comment\n\nSLACKCHAT_TEST_KEY=hello\n", encoding="utf-8")
+    cfg.load_dotenv(p)
+    assert os.environ["SLACKCHAT_TEST_KEY"] == "hello"
+
+
+def test_dotenv_strips_matching_quotes(tmp_path, monkeypatch):
+    monkeypatch.delenv("SLACKCHAT_TEST_KEY", raising=False)
+    p = tmp_path / ".env"
+    p.write_text('SLACKCHAT_TEST_KEY="hello world"\n', encoding="utf-8")
+    cfg.load_dotenv(p)
+    assert os.environ["SLACKCHAT_TEST_KEY"] == "hello world"
+
+
+def test_dotenv_supports_export_prefix(tmp_path, monkeypatch):
+    monkeypatch.delenv("SLACKCHAT_TEST_KEY", raising=False)
+    p = tmp_path / ".env"
+    p.write_text("export SLACKCHAT_TEST_KEY=hello\n", encoding="utf-8")
+    cfg.load_dotenv(p)
+    assert os.environ["SLACKCHAT_TEST_KEY"] == "hello"
+
+
+def test_dotenv_never_overrides_an_existing_env_var(tmp_path, monkeypatch):
+    monkeypatch.setenv("SLACKCHAT_TEST_KEY", "real")
+    p = tmp_path / ".env"
+    p.write_text("SLACKCHAT_TEST_KEY=from_file\n", encoding="utf-8")
+    cfg.load_dotenv(p)
+    assert os.environ["SLACKCHAT_TEST_KEY"] == "real"
+
+
+def test_dotenv_missing_file_is_a_noop(tmp_path):
+    cfg.load_dotenv(tmp_path / "missing.env")  # must not raise
+
+
+def test_dotenv_defaults_to_a_dotenv_file_in_the_current_directory(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.delenv("SLACKCHAT_TEST_KEY", raising=False)
+    (tmp_path / ".env").write_text("SLACKCHAT_TEST_KEY=hello\n", encoding="utf-8")
+    cfg.load_dotenv()
+    assert os.environ["SLACKCHAT_TEST_KEY"] == "hello"

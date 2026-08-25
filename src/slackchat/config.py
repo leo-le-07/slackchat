@@ -69,6 +69,33 @@ def db_path() -> Path:
     return _xdg("XDG_DATA_HOME", ".local/share") / "slackchat" / "runs.db"
 
 
+def load_dotenv(path: Path | None = None) -> None:
+    """Populate ``os.environ`` from a ``.env`` file (default: ``./.env``).
+
+    A real shell export always wins: an existing key is never overridden. A
+    missing file is not an error, same reasoning as :func:`load_config` — the
+    file is optional convenience, not a requirement.
+    """
+    target = path if path is not None else Path.cwd() / ".env"
+    if not target.exists():
+        return
+    for line in target.read_text(encoding="utf-8").splitlines():
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#"):
+            continue
+        if stripped.startswith("export "):
+            stripped = stripped[len("export ") :]
+        key, sep, value = stripped.partition("=")
+        if not sep:
+            continue
+        key = key.strip()
+        value = value.strip()
+        if len(value) >= 2 and value[0] == value[-1] and value[0] in "\"'":
+            value = value[1:-1]
+        if key and key not in os.environ:
+            os.environ[key] = value
+
+
 def utc_now() -> str:
     """ISO8601 UTC, second precision, ``Z`` suffix. Matches Result.created_at."""
     from datetime import UTC, datetime

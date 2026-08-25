@@ -9,7 +9,7 @@ import sys
 from slackchat.cli.clipboard import copy as copy_to_clipboard
 from slackchat.cli.render import render_result
 from slackchat.cli.repl import run_session
-from slackchat.config import utc_now
+from slackchat.config import load_dotenv, utc_now
 from slackchat.core.detect import detect
 from slackchat.core.types import EmptyInputError
 from slackchat.eval.review import review_session
@@ -159,6 +159,7 @@ def _one_line(text: str, width: int = 100) -> str:
 
 
 def main(argv: list[str] | None = None) -> int:
+    load_dotenv()
     args = list(sys.argv[1:] if argv is None else argv)
 
     if args and args[0] in SUBCOMMANDS:

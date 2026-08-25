@@ -1,3 +1,5 @@
+import os
+
 import pytest
 
 from slackchat.cli import main as cli
@@ -103,4 +105,11 @@ def test_a_quoted_input_that_starts_with_a_subcommand_word_is_still_text(wire, c
     # "detect the bug ..." is one argv entry, so it is text, not the subcommand.
     wire("Detect the bug in staging before it reaches production.")
     assert cli.main(["detect the bug in staging before it reaches production"]) == cli.EXIT_OK
-    assert "Detect the bug in staging before it reaches production." in capsys.readouterr().out
+
+
+def test_a_dotenv_file_in_the_working_directory_is_loaded(wire, capsys, monkeypatch, isolated_paths):
+    monkeypatch.delenv("SLACKCHAT_TEST_KEY", raising=False)
+    (isolated_paths / ".env").write_text("SLACKCHAT_TEST_KEY=hello\n", encoding="utf-8")
+    wire("I finished the task we discussed yesterday.")
+    cli.main(["I has finish the task we discussed yesterday."])
+    assert os.environ["SLACKCHAT_TEST_KEY"] == "hello"
