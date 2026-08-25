@@ -10,7 +10,8 @@ from slackchat.core.types import EmptyInputError
 from slackchat.service import Service
 
 PROMPT = "> "
-CONTINUATION = "... "
+CONTINUATION = ""
+PENDING_SUBMIT = "(blank line to send) "
 EXIT_WORDS = frozenset({"/exit", "/quit"})
 
 
@@ -24,14 +25,23 @@ def run_session(
 ) -> int:
     """Read multi-line turns until EOF, Ctrl+C, or an exit word.
 
-    A blank line submits the buffer, which is what lets a multi-line paste
-    arrive as one input instead of being chopped into a run per line.
+    Two consecutive blank lines submit the buffer. A single blank line is
+    kept as a paragraph break instead, so pasting text that has blank lines
+    between paragraphs arrives as one input rather than being chopped into
+    a run per paragraph. The prompt switches to ``PENDING_SUBMIT`` for that
+    second line so the wait for it doesn't look like an unexplained hang.
     """
     write(banner(color))
     buffer: list[str] = []
+    pending_blank = False
 
     while True:
-        prompt = CONTINUATION if buffer else PROMPT
+        if pending_blank:
+            prompt = PENDING_SUBMIT
+        elif buffer:
+            prompt = CONTINUATION
+        else:
+            prompt = PROMPT
         try:
             line = read_line(prompt)
         except (EOFError, KeyboardInterrupt):
@@ -41,15 +51,23 @@ def run_session(
         if line.strip() in EXIT_WORDS:
             return 0
 
-        if line.strip() == "" and not buffer:
+        if line.strip() != "":
+            if pending_blank:
+                buffer.append("")  # confirmed paragraph break, not a submit
+                pending_blank = False
+            buffer.append(line)
+            continue
+
+        if not buffer:
             continue  # nothing typed yet: silently re-prompt
 
-        if line.strip() != "" or not buffer:
-            buffer.append(line)
+        if not pending_blank:
+            pending_blank = True  # could be a paragraph break or a submit
             continue
 
         text = "\n".join(buffer)
         buffer = []
+        pending_blank = False
         _handle_turn(service, text, write=write, color=color, copy_fn=copy_fn)
 
 
