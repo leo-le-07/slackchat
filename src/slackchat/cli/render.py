@@ -28,13 +28,9 @@ def render_inline_diff(changes: list[Change], *, color: bool) -> str:
             continue
         chunk = ""
         if change.before:
-            chunk += (
-                _paint(change.before, RED, color) if color else f"[-{change.before}-]"
-            )
+            chunk += _paint(change.before, RED, color) if color else f"[-{change.before}-]"
         if change.after:
-            chunk += (
-                _paint(change.after, GREEN, color) if color else f"{{+{change.after}+}}"
-            )
+            chunk += _paint(change.after, GREEN, color) if color else f"{{+{change.after}+}}"
         if chunk:
             parts.append(chunk)
     return " ".join(p for p in parts if p)

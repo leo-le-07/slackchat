@@ -1,5 +1,3 @@
-from pathlib import Path
-
 import pytest
 
 from slackchat.core.types import Limits, Result
@@ -17,26 +15,26 @@ def _result(original, output, **overrides):
     from slackchat.core.diffing import diff_words
 
     changes, ratio = diff_words(original, output)
-    base = dict(
-        run_id="r1",
-        original=original,
-        output=output,
-        mode="correction",
-        forced=False,
-        changes=changes,
-        changed_ratio=ratio,
-        flags=[],
-        provider="fake",
-        model="claude-haiku-4-5",
-        prompt_version="1",
-        prompt_hash="abcdef012345",
-        input_tokens=10,
-        output_tokens=10,
-        cost_usd=0.0001,
-        latency_ms=1,
-        created_at="2026-08-23T10:00:00Z",
-        error=None,
-    )
+    base = {
+        "run_id": "r1",
+        "original": original,
+        "output": output,
+        "mode": "correction",
+        "forced": False,
+        "changes": changes,
+        "changed_ratio": ratio,
+        "flags": [],
+        "provider": "fake",
+        "model": "claude-haiku-4-5",
+        "prompt_version": "1",
+        "prompt_hash": "abcdef012345",
+        "input_tokens": 10,
+        "output_tokens": 10,
+        "cost_usd": 0.0001,
+        "latency_ms": 1,
+        "created_at": "2026-08-23T10:00:00Z",
+        "error": None,
+    }
     base.update(overrides)
     return Result(**base)
 
@@ -50,6 +48,7 @@ def _failed(outcomes):
 
 
 # --- universal checks -------------------------------------------------------
+
 
 def test_the_four_universal_checks_run_without_being_declared():
     case = Case(id="c", mode="correction", input="all good", asserts={})
@@ -106,6 +105,7 @@ def test_length_ratio_at_the_limit_passes():
 
 
 # --- declared assertions ----------------------------------------------------
+
 
 def test_unchanged_passes_on_identical_text():
     case = Case(id="c", mode="correction", input="All good.", asserts={"unchanged": True})
@@ -181,12 +181,22 @@ def test_an_unknown_assertion_key_is_an_error():
 
 
 def test_known_assertions_is_exactly_the_documented_five():
-    assert KNOWN_ASSERTIONS == frozenset(
-        {"unchanged", "output_contains_any", "output_excludes", "max_changed_ratio", "max_words"}
+    assert (
+        frozenset(
+            {
+                "unchanged",
+                "output_contains_any",
+                "output_excludes",
+                "max_changed_ratio",
+                "max_words",
+            }
+        )
+        == KNOWN_ASSERTIONS
     )
 
 
 # --- loading ----------------------------------------------------------------
+
 
 def test_the_shipped_cases_load_and_every_key_is_known():
     cases = load_cases()

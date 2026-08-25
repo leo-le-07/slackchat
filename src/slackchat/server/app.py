@@ -57,7 +57,7 @@ def create_app(
         return {"status": "ok"}
 
     @app.post("/process", dependencies=[Depends(require_token)])
-    def process_endpoint(payload: ProcessRequest) -> dict:
+    def process_endpoint(payload: ProcessRequest) -> dict[str, object]:
         try:
             result = resolved_service.run(payload.text, payload.mode, client="server")
         except EmptyInputError as exc:

@@ -1,5 +1,3 @@
-import pytest
-
 from slackchat.config import Config, ServerConfig, config_dir
 from slackchat.server import token as tok
 

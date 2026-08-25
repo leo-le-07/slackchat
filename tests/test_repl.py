@@ -128,16 +128,12 @@ def test_a_multi_line_paste_is_one_input_joined_by_newlines(session):
 
 
 def test_two_turns_are_two_runs(session):
-    _, provider, _, _ = session(
-        ["first", "", "", "second", "", ""], ["first", "second"]
-    )
+    _, provider, _, _ = session(["first", "", "", "second", "", ""], ["first", "second"])
     assert [c["user"] for c in provider.calls] == ["first", "second"]
 
 
 def test_blank_line_with_an_empty_buffer_is_ignored_silently(session):
-    code, provider, reader, out = session(
-        ["", "", "real input", "", ""], ["real input"]
-    )
+    code, provider, reader, out = session(["", "", "real input", "", ""], ["real input"])
     assert len(provider.calls) == 1
     assert "empty" not in out.lower()
     assert "error" not in out.lower()
@@ -201,9 +197,7 @@ def test_each_turn_copies_when_the_copy_function_succeeds(session):
     assert out.count("(copied to clipboard)") == 2
 
 
-def test_a_provider_error_is_shown_and_the_session_continues(
-    isolated_paths, fake_provider
-):
+def test_a_provider_error_is_shown_and_the_session_continues(isolated_paths, fake_provider):
     from slackchat import service as svc
 
     provider = fake_provider([], error="rate limited")

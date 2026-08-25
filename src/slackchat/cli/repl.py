@@ -44,7 +44,7 @@ def run_session(
             prompt = PROMPT
         try:
             line = read_line(prompt)
-        except (EOFError, KeyboardInterrupt):
+        except EOFError, KeyboardInterrupt:
             write("\n")
             return 0
 

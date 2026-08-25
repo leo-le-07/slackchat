@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Any
+
 import anthropic
 
 from slackchat.providers.base import Completion, ProviderError
@@ -20,10 +22,11 @@ class AnthropicProvider:
 
     name = "anthropic"
 
-    def __init__(self, client: object | None = None, max_tokens: int = DEFAULT_MAX_TOKENS):
+    def __init__(self, client: object | None = None, max_tokens: int = DEFAULT_MAX_TOKENS) -> None:
         # Zero-arg construction resolves ANTHROPIC_API_KEY, then any other
-        # configured credential source, from the environment.
-        self._client = client if client is not None else anthropic.Anthropic()
+        # configured credential source, from the environment. Typed as `Any`:
+        # this is the one module allowed to touch the SDK's untyped surface.
+        self._client: Any = client if client is not None else anthropic.Anthropic()
         self._max_tokens = max_tokens
 
     def complete(self, system: str, user: str, *, model: str) -> Completion:

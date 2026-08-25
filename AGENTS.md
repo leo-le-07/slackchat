@@ -13,14 +13,19 @@ Run everything through `uv`; do not activate the venv by hand.
 - One test file: `uv run pytest tests/test_detect.py -q`
 - One test: `uv run pytest tests/test_detect.py::test_empty_and_whitespace_default_to_correction -q`
 - Architecture boundaries: `uv run lint-imports`
+- Lint: `uv run ruff check .`
+- Format: `uv run ruff format .`
+- Type check: `uv run mypy src`
 - CLI: `uv run slackchat "text"`
 - Eval suite: `uv run slackchat eval`
 - Daemon: `uv run slackchat serve`
 - Review scoring: `uv run slackchat eval --review --limit 5`
 - Compare two prompt versions: `uv run slackchat eval --compare 1 2`
-- CI runs exactly: `uv sync --locked`, `uv run pytest -q`, `uv run lint-imports`
+- CI runs exactly: `uv sync --locked`, `uv run ruff check .`, `uv run ruff format --check .`,
+  `uv run mypy src`, `uv run pytest -q`, `uv run lint-imports`
 
-Required order before claiming done: `uv run pytest` then `uv run lint-imports`.
+Required order before claiming done: `uv run ruff check .`, `uv run ruff format --check .`,
+`uv run mypy src`, `uv run pytest`, then `uv run lint-imports`.
 
 ## Architecture
 

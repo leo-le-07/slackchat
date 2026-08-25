@@ -15,6 +15,6 @@ def copy(text: str) -> bool:
     """
     try:
         subprocess.run([PBCOPY], input=text.encode("utf-8"), check=True, capture_output=True)
-    except (OSError, subprocess.CalledProcessError):
+    except OSError, subprocess.CalledProcessError:
         return False
     return True

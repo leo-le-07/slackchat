@@ -45,21 +45,17 @@ def parse_frontmatter(raw: str) -> tuple[dict[str, str], str]:
             continue
         key, _, value = line.partition(":")
         meta[key.strip()] = value.strip()
-    return meta, raw[match.end():].strip()
+    return meta, raw[match.end() :].strip()
 
 
 def load_prompt(mode: Mode, prompts_dir: Path | None = None) -> Prompt:
     """Load the template for ``mode``, inline ``voice.md``, hash the result."""
     directory = prompts_dir if prompts_dir is not None else _PROMPTS_DIR
 
-    voice_meta, voice_body = parse_frontmatter(
-        (directory / "voice.md").read_text(encoding="utf-8")
-    )
+    voice_meta, voice_body = parse_frontmatter((directory / "voice.md").read_text(encoding="utf-8"))
     del voice_meta  # informational only; the hash covers the body
     template_path = directory / f"{mode}.md"
-    template_meta, template_body = parse_frontmatter(
-        template_path.read_text(encoding="utf-8")
-    )
+    template_meta, template_body = parse_frontmatter(template_path.read_text(encoding="utf-8"))
 
     if VOICE_PLACEHOLDER not in template_body:
         raise ValueError(f"{template_path} is missing the {VOICE_PLACEHOLDER} placeholder")

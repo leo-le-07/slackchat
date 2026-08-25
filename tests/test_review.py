@@ -21,9 +21,7 @@ def seeded(isolated_paths, sample_result):
     def _seed(specs):
         conn = store.connect()
         for run_id, mode, client in specs:
-            store.insert_run(
-                conn, sample_result(run_id=run_id, mode=mode), client=client
-            )
+            store.insert_run(conn, sample_result(run_id=run_id, mode=mode), client=client)
         return conn
 
     return _seed
@@ -79,7 +77,9 @@ def test_a_correction_run_asks_for_three_scores_and_a_note(seeded):
         clock=lambda: "2026-08-23T10:00:00Z",
     )
     assert scored == 1
-    rows = list(conn.execute("SELECT dimension, score, reviewer, note FROM reviews ORDER BY dimension"))
+    rows = list(
+        conn.execute("SELECT dimension, score, reviewer, note FROM reviews ORDER BY dimension")
+    )
     assert [(r["dimension"], r["score"]) for r in rows] == [
         ("Correctness", 2),
         ("Minimality", 2),
@@ -92,9 +92,7 @@ def test_a_correction_run_asks_for_three_scores_and_a_note(seeded):
 def test_a_translation_run_asks_for_four_scores(seeded):
     conn = seeded([("a", "translation", "eval")])
     reader = Reader(["2", "2", "2", "2", ""])
-    review.review_session(
-        conn, limit=1, read_line=reader, write=lambda _l: None, clock=lambda: "t"
-    )
+    review.review_session(conn, limit=1, read_line=reader, write=lambda _l: None, clock=lambda: "t")
     assert conn.execute("SELECT COUNT(*) FROM reviews").fetchone()[0] == 4
 
 
@@ -116,9 +114,7 @@ def test_the_input_and_output_are_shown_before_scoring(seeded):
 def test_an_invalid_score_reprompts_without_writing(seeded):
     conn = seeded([("a", "correction", "eval")])
     reader = Reader(["5", "x", "2", "2", "2", ""])
-    review.review_session(
-        conn, limit=1, read_line=reader, write=lambda _l: None, clock=lambda: "t"
-    )
+    review.review_session(conn, limit=1, read_line=reader, write=lambda _l: None, clock=lambda: "t")
     assert conn.execute("SELECT COUNT(*) FROM reviews").fetchone()[0] == 3
     assert len([p for p in reader.prompts if "Minimality" in p]) == 3
 

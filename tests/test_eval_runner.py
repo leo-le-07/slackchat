@@ -132,8 +132,12 @@ def test_compare_prints_both_versions(isolated_paths, sample_result, capsys):
 def test_compare_warns_when_a_version_has_two_prompt_hashes(isolated_paths, sample_result):
     conn = store.connect()
     make_result = sample_result
-    store.insert_run(conn, make_result(run_id="a", prompt_version="2", prompt_hash="aaa"), client="eval")
-    store.insert_run(conn, make_result(run_id="b", prompt_version="2", prompt_hash="bbb"), client="eval")
+    store.insert_run(
+        conn, make_result(run_id="a", prompt_version="2", prompt_hash="aaa"), client="eval"
+    )
+    store.insert_run(
+        conn, make_result(run_id="b", prompt_version="2", prompt_hash="bbb"), client="eval"
+    )
     conn.close()
     lines = []
     runner.compare("2", "3", out=lines.append)

@@ -83,9 +83,7 @@ def test_multiple_text_blocks_are_concatenated():
 
 def test_non_text_blocks_are_ignored():
     blocks = [types.SimpleNamespace(type="thinking", thinking="hmm"), _text_block("out")]
-    result = AnthropicProvider(client=_StubClient(_response(blocks))).complete(
-        "s", "u", model="m"
-    )
+    result = AnthropicProvider(client=_StubClient(_response(blocks))).complete("s", "u", model="m")
     assert result.text == "out"
 
 

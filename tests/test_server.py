@@ -2,7 +2,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from slackchat import service as svc
-from slackchat.config import CliConfig, Config, ServerConfig
+from slackchat.config import Config, ServerConfig
 from slackchat.server.app import create_app
 from slackchat.server.token import TOKEN_HEADER
 from slackchat.store import sqlite as store
@@ -73,9 +73,9 @@ def test_the_json_shape_matches_what_the_cli_saw(client):
         json={"text": "I has finish the task we discussed yesterday."},
         headers=_headers(),
     ).json()
-    direct = svc.build_service(
-        Config(server=ServerConfig(token=TOKEN)), provider=provider
-    ).run("I has finish the task we discussed yesterday.", client="cli")
+    direct = svc.build_service(Config(server=ServerConfig(token=TOKEN)), provider=provider).run(
+        "I has finish the task we discussed yesterday.", client="cli"
+    )
     assert set(body) == {f.name for f in direct.__dataclass_fields__.values()}
 
 

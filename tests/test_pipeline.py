@@ -29,6 +29,7 @@ def run(provider, text, limits, **kwargs):
 
 # --- happy paths ------------------------------------------------------------
 
+
 def test_correction_of_a_real_error(fake_provider, limits):
     provider = fake_provider("I finished the task we discussed yesterday.")
     result = run(provider, "I has finish the task we discussed yesterday.", limits)
@@ -82,6 +83,7 @@ def test_the_user_message_is_the_input_text(fake_provider, limits):
 
 # --- empty input ------------------------------------------------------------
 
+
 @pytest.mark.parametrize("text", ["", "   ", "\n\t "])
 def test_empty_input_is_rejected_before_any_api_call(fake_provider, limits, text):
     provider = fake_provider(["should never be used"])
@@ -92,6 +94,7 @@ def test_empty_input_is_rejected_before_any_api_call(fake_provider, limits, text
 
 # --- sanitize ---------------------------------------------------------------
 
+
 def test_emoji_are_stripped_from_the_output(fake_provider, limits):
     provider = fake_provider("Looks good 👍")
     result = run(provider, "Looks good", limits)
@@ -100,6 +103,7 @@ def test_emoji_are_stripped_from_the_output(fake_provider, limits):
 
 
 # --- retry ------------------------------------------------------------------
+
 
 def test_over_edit_triggers_one_retry_and_the_retry_wins(fake_provider, limits):
     provider = fake_provider(
@@ -116,9 +120,7 @@ def test_over_edit_triggers_one_retry_and_the_retry_wins(fake_provider, limits):
 
 
 def test_the_retry_instruction_goes_on_the_user_message(fake_provider, limits):
-    provider = fake_provider(
-        ["Deploy failed; rollback done.", "Deploy failed. Rollback done."]
-    )
+    provider = fake_provider(["Deploy failed; rollback done.", "Deploy failed. Rollback done."])
     run(provider, "Deploy failed. Rollback done.", limits)
     first, second = provider.calls
     assert first["user"] == "Deploy failed. Rollback done."
@@ -155,10 +157,9 @@ def test_max_retries_zero_means_one_attempt(fake_provider, limits):
 
 # --- mechanical fallback ----------------------------------------------------
 
+
 def test_persistent_banned_char_falls_back_mechanically(fake_provider, limits):
-    provider = fake_provider(
-        ["Deploy failed; rollback done.", "Deploy failed; rollback done."]
-    )
+    provider = fake_provider(["Deploy failed; rollback done.", "Deploy failed; rollback done."])
     result = run(provider, "Deploy failed. Rollback done.", limits)
     assert result.output == "Deploy failed, rollback done."
     assert result.flags == [FLAG_BANNED_CHAR, FLAG_OVER_EDIT, FLAG_RETRIED, FLAG_MECHANICAL]
@@ -175,6 +176,7 @@ def test_over_edit_alone_never_triggers_mechanical_substitution(fake_provider, l
 
 # --- empty output -----------------------------------------------------------
 
+
 def test_empty_output_is_flagged_and_retried(fake_provider, limits):
     provider = fake_provider(["", ""])
     result = run(provider, "Some input here.", limits)
@@ -184,6 +186,7 @@ def test_empty_output_is_flagged_and_retried(fake_provider, limits):
 
 # --- pricing ----------------------------------------------------------------
 
+
 def test_unknown_pricing_sets_the_flag_and_a_null_cost(fake_provider, limits):
     provider = fake_provider("some input", model="some-local-llama")
     result = run(provider, "some input", limits)
@@ -192,6 +195,7 @@ def test_unknown_pricing_sets_the_flag_and_a_null_cost(fake_provider, limits):
 
 
 # --- provider failure -------------------------------------------------------
+
 
 def test_provider_failure_becomes_a_result_with_an_error(fake_provider, limits):
     provider = fake_provider([], error="rate limited")

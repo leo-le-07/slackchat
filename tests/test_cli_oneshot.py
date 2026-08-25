@@ -107,7 +107,9 @@ def test_a_quoted_input_that_starts_with_a_subcommand_word_is_still_text(wire, c
     assert cli.main(["detect the bug in staging before it reaches production"]) == cli.EXIT_OK
 
 
-def test_a_dotenv_file_in_the_working_directory_is_loaded(wire, capsys, monkeypatch, isolated_paths):
+def test_a_dotenv_file_in_the_working_directory_is_loaded(
+    wire, capsys, monkeypatch, isolated_paths
+):
     monkeypatch.delenv("SLACKCHAT_TEST_KEY", raising=False)
     (isolated_paths / ".env").write_text("SLACKCHAT_TEST_KEY=hello\n", encoding="utf-8")
     wire("I finished the task we discussed yesterday.")

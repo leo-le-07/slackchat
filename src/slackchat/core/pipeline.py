@@ -16,10 +16,10 @@ from slackchat.core.diffing import diff_words
 from slackchat.core.prompts import Prompt, load_prompt
 from slackchat.core.types import Change, EmptyInputError, Limits, Mode, Result
 from slackchat.core.validate import (
+    FLAG_BANNED_CHAR,
     FLAG_MECHANICAL,
     FLAG_RETRIED,
     FLAG_UNKNOWN_PRICING,
-    FLAG_BANNED_CHAR,
     Violation,
     find_violations,
     mechanical_replace,
@@ -72,7 +72,8 @@ def process(
         raise EmptyInputError("input is empty or whitespace only")
 
     if cost_fn is None:
-        def cost_fn(_model, _in_tokens, _out_tokens):  # noqa: ARG001
+
+        def cost_fn(_model: str, _in_tokens: int | None, _out_tokens: int | None) -> float | None:  # noqa: ARG001
             return None
 
     clock = clock or _utc_now
@@ -98,9 +99,7 @@ def process(
     while True:
         started = timer()
         try:
-            completion = provider.complete(
-                active_prompt.text, text + suffix, model=model
-            )
+            completion = provider.complete(active_prompt.text, text + suffix, model=model)
         except ProviderError as exc:
             return Result(
                 run_id=run_id,

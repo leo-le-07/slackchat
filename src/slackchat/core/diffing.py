@@ -38,7 +38,7 @@ def diff_words(original: str, output: str) -> tuple[list[Change], float]:
     changed = 0
     for tag, i1, i2, j1, j2 in matcher.get_opcodes():
         segment = Change(
-            kind=tag,  # type: ignore[arg-type]
+            kind=tag,
             before=" ".join(before_tokens[i1:i2]),
             after=" ".join(after_tokens[j1:j2]),
         )
@@ -46,8 +46,5 @@ def diff_words(original: str, output: str) -> tuple[list[Change], float]:
         if tag != "equal":
             changed += max(i2 - i1, j2 - j1)
 
-    if before_tokens:
-        ratio = changed / len(before_tokens)
-    else:
-        ratio = 1.0 if after_tokens else 0.0
+    ratio = changed / len(before_tokens) if before_tokens else (1.0 if after_tokens else 0.0)
     return changes, round(ratio, 4)

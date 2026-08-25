@@ -7,30 +7,30 @@ RESET = "\x1b[0m"
 
 
 def _result(**overrides):
-    base = dict(
-        run_id="run0001",
-        original="I has finish the task yesterday.",
-        output="I finished the task yesterday.",
-        mode="correction",
-        forced=False,
-        changes=[
+    base = {
+        "run_id": "run0001",
+        "original": "I has finish the task yesterday.",
+        "output": "I finished the task yesterday.",
+        "mode": "correction",
+        "forced": False,
+        "changes": [
             Change("equal", "I", "I"),
             Change("replace", "has finish", "finished"),
             Change("equal", "the task yesterday.", "the task yesterday."),
         ],
-        changed_ratio=0.3333,
-        flags=[],
-        provider="anthropic",
-        model="claude-haiku-4-5",
-        prompt_version="1",
-        prompt_hash="abcdef012345",
-        input_tokens=100,
-        output_tokens=20,
-        cost_usd=0.0002,
-        latency_ms=250,
-        created_at="2026-08-23T10:00:00Z",
-        error=None,
-    )
+        "changed_ratio": 0.3333,
+        "flags": [],
+        "provider": "anthropic",
+        "model": "claude-haiku-4-5",
+        "prompt_version": "1",
+        "prompt_hash": "abcdef012345",
+        "input_tokens": 100,
+        "output_tokens": 20,
+        "cost_usd": 0.0002,
+        "latency_ms": 250,
+        "created_at": "2026-08-23T10:00:00Z",
+        "error": None,
+    }
     base.update(overrides)
     return Result(**base)
 

@@ -6,6 +6,7 @@ import pytest
 # pytest's default import mode puts tests/ on sys.path, so the conftest helper
 # is importable by name. Do not redefine the builder here — one definition.
 from conftest import make_result as _result
+
 from slackchat.store import sqlite as store
 
 
@@ -70,7 +71,9 @@ def test_empty_flags_store_as_an_empty_json_array(conn):
 
 
 def test_recent_runs_is_newest_first_and_respects_the_limit(conn):
-    for i, stamp in enumerate(["2026-08-23T10:00:00Z", "2026-08-23T11:00:00Z", "2026-08-23T12:00:00Z"]):
+    for i, stamp in enumerate(
+        ["2026-08-23T10:00:00Z", "2026-08-23T11:00:00Z", "2026-08-23T12:00:00Z"]
+    ):
         store.insert_run(conn, _result(run_id=f"r{i}", created_at=stamp), client="cli")
     rows = store.recent_runs(conn, limit=2)
     assert [r["run_id"] for r in rows] == ["r2", "r1"]
@@ -115,15 +118,27 @@ def test_a_score_outside_zero_one_two_is_rejected(conn):
 def test_pass_rate_counts_runs_not_checks(conn):
     store.insert_run(conn, _result(run_id="p1", prompt_version="1"), client="eval")
     store.insert_run(conn, _result(run_id="p2", prompt_version="1"), client="eval")
-    store.insert_eval_result(conn, run_id="p1", case_id="noop-001", check_name="unchanged", passed=True)
-    store.insert_eval_result(conn, run_id="p1", case_id="noop-001", check_name="no_emoji", passed=True)
-    store.insert_eval_result(conn, run_id="p2", case_id="fix-001", check_name="unchanged", passed=False)
+    store.insert_eval_result(
+        conn, run_id="p1", case_id="noop-001", check_name="unchanged", passed=True
+    )
+    store.insert_eval_result(
+        conn, run_id="p1", case_id="noop-001", check_name="no_emoji", passed=True
+    )
+    store.insert_eval_result(
+        conn, run_id="p2", case_id="fix-001", check_name="unchanged", passed=False
+    )
     passed, total = store.pass_rate(conn, "1")
     assert (passed, total) == (1, 2)
 
 
 def test_prompt_hash_conflicts_reports_a_version_with_two_hashes(conn):
-    store.insert_run(conn, _result(run_id="x", prompt_version="1", prompt_hash="aaa"), client="eval")
-    store.insert_run(conn, _result(run_id="y", prompt_version="1", prompt_hash="bbb"), client="eval")
-    store.insert_run(conn, _result(run_id="z", prompt_version="2", prompt_hash="ccc"), client="eval")
+    store.insert_run(
+        conn, _result(run_id="x", prompt_version="1", prompt_hash="aaa"), client="eval"
+    )
+    store.insert_run(
+        conn, _result(run_id="y", prompt_version="1", prompt_hash="bbb"), client="eval"
+    )
+    store.insert_run(
+        conn, _result(run_id="z", prompt_version="2", prompt_hash="ccc"), client="eval"
+    )
     assert store.prompt_hash_conflicts(conn) == [("1", 2)]

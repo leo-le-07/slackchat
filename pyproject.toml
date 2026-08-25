@@ -18,6 +18,9 @@ dev = [
     "pytest>=9.1.1",
     "import-linter>=2.13",
     "httpx>=0.28.1",
+    "ruff>=0.16.4",
+    "mypy>=2.3.1",
+    "types-pyyaml>=6.0.12.20260815",
 ]
 
 [build-system]
@@ -29,6 +32,22 @@ source-include = ["src/slackchat/prompts/*.md", "src/slackchat/store/*.sql", "sr
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+[tool.ruff]
+target-version = "py314"
+line-length = 100
+extend-exclude = ["docs"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "C4", "SIM"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["E501"]
+
+[tool.mypy]
+python_version = "3.14"
+files = ["src"]
+strict = true
 
 [tool.importlinter]
 root_package = "slackchat"

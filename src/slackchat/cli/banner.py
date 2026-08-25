@@ -27,9 +27,7 @@ RESET = "\x1b[0m"
 def render_word(word: str) -> str:
     """Lay the glyphs side by side, one blank column between letters."""
     letters = [GLYPHS[ch] for ch in word.upper()]
-    return "\n".join(
-        " ".join(letter[row] for letter in letters) for row in range(GLYPH_HEIGHT)
-    )
+    return "\n".join(" ".join(letter[row] for letter in letters) for row in range(GLYPH_HEIGHT))
 
 
 def banner(color: bool) -> str:

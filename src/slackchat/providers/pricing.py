@@ -22,9 +22,7 @@ def normalise_model_id(model: str) -> str:
     return _DATE_SUFFIX_RE.sub("", model)
 
 
-def cost_usd(
-    model: str, input_tokens: int | None, output_tokens: int | None
-) -> float | None:
+def cost_usd(model: str, input_tokens: int | None, output_tokens: int | None) -> float | None:
     """Cost in USD, or ``None`` when it cannot be known.
 
     ``None`` rather than ``0.0`` on purpose: a zero here would be a lie

@@ -69,7 +69,7 @@ def recent_runs(
 ) -> list[sqlite3.Row]:
     if mode is None:
         sql = "SELECT * FROM runs ORDER BY created_at DESC, rowid DESC LIMIT ?"
-        params: tuple = (limit,)
+        params: tuple[object, ...] = (limit,)
     else:
         sql = "SELECT * FROM runs WHERE mode = ? ORDER BY created_at DESC, rowid DESC LIMIT ?"
         params = (mode, limit)

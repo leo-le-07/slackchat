@@ -8,26 +8,26 @@ from slackchat.providers.base import Completion, ProviderError
 
 def make_result(**overrides) -> Result:
     """A fully populated Result for tests that need a row, not a run."""
-    base = dict(
-        run_id="run0001",
-        original="I has finish",
-        output="I finished",
-        mode="correction",
-        forced=False,
-        changes=[],
-        changed_ratio=0.5,
-        flags=["retried"],
-        provider="anthropic",
-        model="claude-haiku-4-5",
-        prompt_version="1",
-        prompt_hash="abcdef012345",
-        input_tokens=100,
-        output_tokens=20,
-        cost_usd=0.0002,
-        latency_ms=250,
-        created_at="2026-08-23T10:00:00Z",
-        error=None,
-    )
+    base = {
+        "run_id": "run0001",
+        "original": "I has finish",
+        "output": "I finished",
+        "mode": "correction",
+        "forced": False,
+        "changes": [],
+        "changed_ratio": 0.5,
+        "flags": ["retried"],
+        "provider": "anthropic",
+        "model": "claude-haiku-4-5",
+        "prompt_version": "1",
+        "prompt_hash": "abcdef012345",
+        "input_tokens": 100,
+        "output_tokens": 20,
+        "cost_usd": 0.0002,
+        "latency_ms": 250,
+        "created_at": "2026-08-23T10:00:00Z",
+        "error": None,
+    }
     base.update(overrides)
     return Result(**base)
 

@@ -11,7 +11,7 @@ from slackchat.cli.render import render_result
 from slackchat.cli.repl import run_session
 from slackchat.config import load_dotenv, utc_now
 from slackchat.core.detect import detect
-from slackchat.core.types import EmptyInputError
+from slackchat.core.types import EmptyInputError, Mode
 from slackchat.eval.review import review_session
 from slackchat.eval.runner import compare as eval_compare
 from slackchat.eval.runner import run_suite
@@ -43,7 +43,9 @@ def _oneshot_parser() -> argparse.ArgumentParser:
         prog="slackchat",
         description="Fix English text, or translate Vietnamese to English.",
     )
-    parser.add_argument("text", nargs="?", help="text to process; omit to read stdin or start a session")
+    parser.add_argument(
+        "text", nargs="?", help="text to process; omit to read stdin or start a session"
+    )
     parser.add_argument(
         "--mode",
         choices=["correction", "translation"],
@@ -58,7 +60,7 @@ def _oneshot_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def _run_oneshot(text: str, *, mode: str | None, raw: bool) -> int:
+def _run_oneshot(text: str, *, mode: Mode | None, raw: bool) -> int:
     service = build_service()
     try:
         result = service.run(text, mode, client="cli")
@@ -75,9 +77,13 @@ def _run_oneshot(text: str, *, mode: str | None, raw: bool) -> int:
         print(f"slackchat: {result.error}", file=sys.stderr)
         return EXIT_PROVIDER_ERROR
 
-    if _stdout_is_tty() and service.config.cli.auto_copy and result.output:
-        if copy_to_clipboard(result.output):
-            print("(copied to clipboard)")
+    if (
+        _stdout_is_tty()
+        and service.config.cli.auto_copy
+        and result.output
+        and copy_to_clipboard(result.output)
+    ):
+        print("(copied to clipboard)")
     return EXIT_OK
 
 

@@ -92,7 +92,9 @@ def test_an_errored_result_is_not_copied(wired, capsys, monkeypatch, isolated_pa
     from slackchat import service as svc
 
     provider = fake_provider([], error="rate limited")
-    monkeypatch.setattr(cli, "build_service", lambda *a, **k: svc.build_service(Config(), provider=provider))
+    monkeypatch.setattr(
+        cli, "build_service", lambda *a, **k: svc.build_service(Config(), provider=provider)
+    )
     monkeypatch.setattr(cli, "_stdout_is_tty", lambda: True)
     copied = []
     monkeypatch.setattr(cli, "copy_to_clipboard", lambda text: copied.append(text) or True)

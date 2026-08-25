@@ -56,7 +56,8 @@ def test_banner_with_colour_dims_the_hint():
 def test_banner_adds_no_dependency():
     import slackchat.cli.banner as module
 
-    source = open(module.__file__, encoding="utf-8").read()
+    with open(module.__file__, encoding="utf-8") as f:
+        source = f.read()
     assert "import " in source  # sanity: the file parses as a module
     for forbidden in ("pyfiglet", "art", "rich"):
         assert forbidden not in source

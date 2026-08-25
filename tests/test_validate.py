@@ -12,8 +12,8 @@ from slackchat.core.validate import (
     sanitize,
 )
 
-
 # --- sanitize ---------------------------------------------------------------
+
 
 def test_sanitize_removes_emoji_and_tidies_the_gap():
     assert sanitize("Thanks! 🙏 Looks good ✅") == "Thanks! Looks good"
@@ -44,36 +44,50 @@ def test_sanitize_never_touches_semicolon_or_em_dash():
 
 # --- banned characters ------------------------------------------------------
 
+
 def test_banned_chars_are_ordered_and_deduped():
     assert BANNED_CHARS == (";", "—")
 
 
 def test_correction_keeps_the_writers_own_em_dash():
-    assert banned_chars_introduced("I shipped it — finally.", "I shipped it — finally.", "correction") == []
+    assert (
+        banned_chars_introduced("I shipped it — finally.", "I shipped it — finally.", "correction")
+        == []
+    )
 
 
 def test_correction_flags_an_em_dash_the_model_added():
-    assert banned_chars_introduced("I shipped it finally.", "I shipped it — finally.", "correction") == ["—"]
+    assert banned_chars_introduced(
+        "I shipped it finally.", "I shipped it — finally.", "correction"
+    ) == ["—"]
 
 
 def test_correction_flags_a_semicolon_the_model_added():
-    assert banned_chars_introduced("Deploy failed. Rollback done.", "Deploy failed; rollback done.", "correction") == [";"]
+    assert banned_chars_introduced(
+        "Deploy failed. Rollback done.", "Deploy failed; rollback done.", "correction"
+    ) == [";"]
 
 
 def test_translation_bans_unconditionally_even_if_the_source_had_one():
-    assert banned_chars_introduced("Tôi xong; anh xem nhé", "I am done; please review", "translation") == [";"]
+    assert banned_chars_introduced(
+        "Tôi xong; anh xem nhé", "I am done; please review", "translation"
+    ) == [";"]
 
 
 # --- find_violations --------------------------------------------------------
 
+
 def test_clean_correction_has_no_violations():
-    assert find_violations(
-        original="The deployment failed.",
-        output="The deployment failed.",
-        mode="correction",
-        changed_ratio=0.0,
-        max_changed_ratio=0.25,
-    ) == []
+    assert (
+        find_violations(
+            original="The deployment failed.",
+            output="The deployment failed.",
+            mode="correction",
+            changed_ratio=0.0,
+            max_changed_ratio=0.25,
+        )
+        == []
+    )
 
 
 def test_over_edit_above_the_limit_is_flagged():
@@ -89,23 +103,29 @@ def test_over_edit_above_the_limit_is_flagged():
 
 
 def test_over_edit_is_not_checked_in_translation_mode():
-    assert find_violations(
-        original="Tôi đã hoàn thành task hôm qua.",
-        output="I finished the task yesterday.",
-        mode="translation",
-        changed_ratio=3.0,
-        max_changed_ratio=0.25,
-    ) == []
+    assert (
+        find_violations(
+            original="Tôi đã hoàn thành task hôm qua.",
+            output="I finished the task yesterday.",
+            mode="translation",
+            changed_ratio=3.0,
+            max_changed_ratio=0.25,
+        )
+        == []
+    )
 
 
 def test_ratio_exactly_at_the_limit_passes():
-    assert find_violations(
-        original="a b c d",
-        output="a b c e",
-        mode="correction",
-        changed_ratio=0.25,
-        max_changed_ratio=0.25,
-    ) == []
+    assert (
+        find_violations(
+            original="a b c d",
+            output="a b c e",
+            mode="correction",
+            changed_ratio=0.25,
+            max_changed_ratio=0.25,
+        )
+        == []
+    )
 
 
 def test_empty_output_short_circuits_every_other_check():
@@ -134,6 +154,7 @@ def test_multiple_banned_chars_share_one_flag_but_give_two_instructions():
 
 # --- retry suffix -----------------------------------------------------------
 
+
 def test_retry_suffix_lists_each_instruction():
     violations = find_violations(
         original="Deploy failed. Rollback done.",
@@ -154,10 +175,14 @@ def test_retry_suffix_is_empty_without_violations():
 
 # --- mechanical fallback ----------------------------------------------------
 
+
 @pytest.mark.parametrize(
     "given,expected",
     [
-        ("We shipped it — the tests passed; all good.", "We shipped it, the tests passed, all good."),
+        (
+            "We shipped it — the tests passed; all good.",
+            "We shipped it, the tests passed, all good.",
+        ),
         ("Deploy failed; rollback done.", "Deploy failed, rollback done."),
         ("It works—mostly.", "It works, mostly."),
         ("a — ; b", "a, b"),

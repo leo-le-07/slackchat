@@ -7,9 +7,9 @@ per-case expectations.
 
 from __future__ import annotations
 
-from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any, cast
 
 import yaml
 
@@ -29,7 +29,7 @@ class Case:
     id: str
     mode: Mode
     input: str
-    asserts: dict
+    asserts: dict[str, object]
 
 
 @dataclass(frozen=True)
@@ -102,7 +102,7 @@ def _declared(case: Case, result: Result) -> list[CheckOutcome]:
                 CheckOutcome("unchanged", passed, "" if passed else f"got {result.output!r}")
             )
         elif name == "output_contains_any":
-            needles: Iterable[str] = expected
+            needles = cast(list[str], expected)
             passed = any(n in result.output for n in needles)
             outcomes.append(
                 CheckOutcome(
@@ -110,12 +110,13 @@ def _declared(case: Case, result: Result) -> list[CheckOutcome]:
                 )
             )
         elif name == "output_excludes":
-            hits = [n for n in expected if n.lower() in result.output.lower()]
+            excluded = cast(list[str], expected)
+            hits = [n for n in excluded if n.lower() in result.output.lower()]
             outcomes.append(
                 CheckOutcome("output_excludes", not hits, f"found {hits}" if hits else "")
             )
         elif name == "max_changed_ratio":
-            passed = result.changed_ratio <= float(expected)
+            passed = result.changed_ratio <= float(cast(Any, expected))
             outcomes.append(
                 CheckOutcome(
                     "max_changed_ratio",
@@ -125,7 +126,7 @@ def _declared(case: Case, result: Result) -> list[CheckOutcome]:
             )
         elif name == "max_words":
             words = word_count(result.output)
-            passed = words <= int(expected)
+            passed = words <= int(cast(Any, expected))
             outcomes.append(
                 CheckOutcome("max_words", passed, "" if passed else f"{words} > {expected}")
             )
