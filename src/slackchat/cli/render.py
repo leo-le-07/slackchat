@@ -39,26 +39,27 @@ def render_inline_diff(changes: list[Change], *, color: bool) -> str:
 def _meta_line(result: Result) -> str:
     cost = f"${result.cost_usd:.6f}" if result.cost_usd is not None else "cost n/a"
     mode = f"{result.mode} (forced)" if result.forced else result.mode
-    return " · ".join(
-        [
-            mode,
-            f"changed {round(result.changed_ratio * 100)}%",
-            result.model,
-            f"{result.latency_ms}ms",
-            cost,
-        ]
-    )
+    parts = [mode]
+    if result.mode != "translation":
+        parts.append(f"changed {round(result.changed_ratio * 100)}%")
+    parts.extend([result.model, f"{result.latency_ms}ms", cost])
+    return " · ".join(parts)
 
 
 def render_result(result: Result, *, color: bool) -> str:
-    """The human view: clean output, then how it got there."""
+    """The human view: clean output, then how it got there.
+
+    Translation always rewrites the whole sentence, so the diff and the
+    changed-ratio figure carry no signal there. Both are correction-only.
+    """
     lines = [result.output, ""]
     if result.error:
         lines.append(_paint(f"error: {result.error}", RED, color))
         return "\n".join(lines).rstrip() + "\n"
 
     lines.append(_paint(f"  {_meta_line(result)}", DIM, color))
-    lines.append(f"  {render_inline_diff(result.changes, color=color)}")
+    if result.mode != "translation":
+        lines.append(f"  {render_inline_diff(result.changes, color=color)}")
     if result.flags:
         lines.append(_paint(f"  flags: {', '.join(result.flags)}", RED, color))
     return "\n".join(lines) + "\n"

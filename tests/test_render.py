@@ -87,6 +87,41 @@ def test_no_flag_line_when_there_are_no_flags():
     assert "flags:" not in render_result(_result(), color=False)
 
 
+def test_translation_mode_renders_no_diff_line():
+    rendered = render_result(
+        _result(
+            mode="translation",
+            original="Xin chao, ban khoe khong?",
+            output="Hello, how are you?",
+            changes=[Change("replace", "Xin chao, ban khoe khong?", "Hello, how are you?")],
+            changed_ratio=1.0,
+        ),
+        color=False,
+    )
+    assert "[-" not in rendered
+    assert "{+" not in rendered
+
+
+def test_translation_mode_meta_line_omits_changed_ratio():
+    rendered = render_result(_result(mode="translation", changed_ratio=1.0), color=False)
+    assert "changed" not in rendered
+    assert "%" not in rendered
+
+
+def test_translation_mode_meta_line_still_has_mode_model_latency_and_cost():
+    rendered = render_result(_result(mode="translation", changed_ratio=1.0), color=False)
+    assert "translation" in rendered
+    assert "claude-haiku-4-5" in rendered
+    assert "250ms" in rendered
+    assert "$0.000200" in rendered
+
+
+def test_correction_mode_still_shows_diff_and_changed_ratio():
+    rendered = render_result(_result(), color=False)
+    assert "[-has finish-]" in rendered
+    assert "33%" in rendered
+
+
 def test_error_result_renders_the_error_and_no_diff():
     rendered = render_result(
         _result(output="", changes=[], changed_ratio=0.0, error="rate limited"), color=False
