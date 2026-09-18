@@ -9,15 +9,9 @@ Keep every commit in this repo consistent with the style below.
 
 ## Before you commit
 
-Run the AGENTS.md check order first, in this order, and only commit if all pass:
-
-```bash
-uv run ruff check .
-uv run ruff format --check .
-uv run mypy src
-uv run pytest
-uv run lint-imports
-```
+Run `./scripts/check.sh` — the single source of truth for the AGENTS.md check
+order (ruff check, ruff format --check, mypy, pytest, lint-imports) — and
+only commit if it exits 0.
 
 If any step fails, fix it — do not commit around it.
 

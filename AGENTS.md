@@ -21,11 +21,12 @@ Run everything through `uv`; do not activate the venv by hand.
 - Daemon: `uv run slackchat serve`
 - Review scoring: `uv run slackchat eval --review --limit 5`
 - Compare two prompt versions: `uv run slackchat eval --compare 1 2`
-- CI runs exactly: `uv sync --locked`, `uv run ruff check .`, `uv run ruff format --check .`,
-  `uv run mypy src`, `uv run pytest -q`, `uv run lint-imports`
+- CI runs: `uv sync --locked`, then `./scripts/check.sh`
 
-Required order before claiming done: `uv run ruff check .`, `uv run ruff format --check .`,
-`uv run mypy src`, `uv run pytest`, then `uv run lint-imports`.
+Required before claiming done: `./scripts/check.sh` must exit 0. It runs, in
+order, `ruff check`, `ruff format --check`, `mypy src`, `pytest`, and
+`lint-imports`; it is the single source of truth for this sequence, so don't
+restate the command list elsewhere — update the script instead.
 
 ## Architecture
 
