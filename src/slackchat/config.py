@@ -25,6 +25,7 @@ class ProviderConfig:
 @dataclass(frozen=True)
 class CliConfig:
     auto_copy: bool = True
+    show_status: bool = False
 
 
 @dataclass(frozen=True)
@@ -133,7 +134,10 @@ def load_config(path: Path | None = None) -> Config:
             ),
             max_retries=int(limits_raw.get("max_retries", defaults.limits.max_retries)),
         ),
-        cli=CliConfig(auto_copy=bool(cli_raw.get("auto_copy", defaults.cli.auto_copy))),
+        cli=CliConfig(
+            auto_copy=bool(cli_raw.get("auto_copy", defaults.cli.auto_copy)),
+            show_status=bool(cli_raw.get("show_status", defaults.cli.show_status)),
+        ),
         server=ServerConfig(
             port=int(server_raw.get("port", defaults.server.port)),
             token=server_raw.get("token", defaults.server.token),

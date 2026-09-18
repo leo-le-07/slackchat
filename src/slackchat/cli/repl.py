@@ -84,7 +84,7 @@ def _handle_turn(
     except EmptyInputError:
         return
 
-    write(render_result(result, color=color))
+    write(render_result(result, color=color, show_status=service.config.cli.show_status))
     if result.error:
         return
     if service.config.cli.auto_copy and result.output and copy_fn(result.output):

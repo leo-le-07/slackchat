@@ -17,6 +17,8 @@ max_retries       = 1
 [cli]
 # Copy the result to the clipboard when stdout is a terminal.
 auto_copy = true
+# Print the dim status line (mode, model, latency, cost) after each result.
+show_status = false
 
 [server]
 port = 8765

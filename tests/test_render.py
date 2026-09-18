@@ -55,12 +55,12 @@ def test_unchanged_text_renders_no_markers():
 
 
 def test_result_starts_with_the_clean_output():
-    rendered = render_result(_result(), color=False)
+    rendered = render_result(_result(), color=False, show_status=True)
     assert rendered.splitlines()[0] == "I finished the task yesterday."
 
 
 def test_meta_line_carries_mode_ratio_model_latency_and_cost():
-    rendered = render_result(_result(), color=False)
+    rendered = render_result(_result(), color=False, show_status=True)
     assert "correction" in rendered
     assert "33%" in rendered
     assert "claude-haiku-4-5" in rendered
@@ -69,22 +69,46 @@ def test_meta_line_carries_mode_ratio_model_latency_and_cost():
 
 
 def test_unknown_cost_renders_as_a_dash_not_a_zero():
-    rendered = render_result(_result(cost_usd=None), color=False)
+    rendered = render_result(_result(cost_usd=None), color=False, show_status=True)
     assert "$0.000000" not in rendered
     assert "cost n/a" in rendered
 
 
 def test_forced_mode_is_marked():
-    assert "forced" in render_result(_result(forced=True), color=False)
+    assert "forced" in render_result(_result(forced=True), color=False, show_status=True)
 
 
 def test_flags_are_listed_on_their_own_line():
-    rendered = render_result(_result(flags=["over_edit_suspected", "retried"]), color=False)
+    rendered = render_result(
+        _result(flags=["over_edit_suspected", "retried"]), color=False, show_status=True
+    )
     assert "flags: over_edit_suspected, retried" in rendered
 
 
 def test_no_flag_line_when_there_are_no_flags():
-    assert "flags:" not in render_result(_result(), color=False)
+    assert "flags:" not in render_result(_result(), color=False, show_status=True)
+
+
+def test_show_status_false_hides_the_meta_line():
+    rendered = render_result(_result(), color=False, show_status=False)
+    assert "claude-haiku-4-5" not in rendered
+    assert "250ms" not in rendered
+    assert "$0.000200" not in rendered
+
+
+def test_show_status_false_still_shows_diff_and_flags():
+    rendered = render_result(_result(flags=["over_edit_suspected"]), color=False, show_status=False)
+    assert "[-has finish-]" in rendered
+    assert "flags: over_edit_suspected" in rendered
+
+
+def test_show_status_false_still_shows_error():
+    rendered = render_result(
+        _result(output="", changes=[], changed_ratio=0.0, error="rate limited"),
+        color=False,
+        show_status=False,
+    )
+    assert "error: rate limited" in rendered
 
 
 def test_translation_mode_renders_no_diff_line():
@@ -97,19 +121,24 @@ def test_translation_mode_renders_no_diff_line():
             changed_ratio=1.0,
         ),
         color=False,
+        show_status=True,
     )
     assert "[-" not in rendered
     assert "{+" not in rendered
 
 
 def test_translation_mode_meta_line_omits_changed_ratio():
-    rendered = render_result(_result(mode="translation", changed_ratio=1.0), color=False)
+    rendered = render_result(
+        _result(mode="translation", changed_ratio=1.0), color=False, show_status=True
+    )
     assert "changed" not in rendered
     assert "%" not in rendered
 
 
 def test_translation_mode_meta_line_still_has_mode_model_latency_and_cost():
-    rendered = render_result(_result(mode="translation", changed_ratio=1.0), color=False)
+    rendered = render_result(
+        _result(mode="translation", changed_ratio=1.0), color=False, show_status=True
+    )
     assert "translation" in rendered
     assert "claude-haiku-4-5" in rendered
     assert "250ms" in rendered
@@ -117,14 +146,16 @@ def test_translation_mode_meta_line_still_has_mode_model_latency_and_cost():
 
 
 def test_correction_mode_still_shows_diff_and_changed_ratio():
-    rendered = render_result(_result(), color=False)
+    rendered = render_result(_result(), color=False, show_status=True)
     assert "[-has finish-]" in rendered
     assert "33%" in rendered
 
 
 def test_error_result_renders_the_error_and_no_diff():
     rendered = render_result(
-        _result(output="", changes=[], changed_ratio=0.0, error="rate limited"), color=False
+        _result(output="", changes=[], changed_ratio=0.0, error="rate limited"),
+        color=False,
+        show_status=True,
     )
     assert "error: rate limited" in rendered
     assert "[-" not in rendered

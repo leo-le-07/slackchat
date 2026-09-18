@@ -71,7 +71,14 @@ def _run_oneshot(text: str, *, mode: Mode | None, raw: bool) -> int:
     if raw:
         print(result.output)
     else:
-        print(render_result(result, color=_stdout_is_tty()), end="")
+        print(
+            render_result(
+                result,
+                color=_stdout_is_tty(),
+                show_status=service.config.cli.show_status,
+            ),
+            end="",
+        )
 
     if result.error:
         print(f"slackchat: {result.error}", file=sys.stderr)

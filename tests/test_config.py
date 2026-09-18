@@ -13,6 +13,7 @@ def test_defaults_when_no_file(tmp_path):
     assert conf.limits.max_length_ratio == 1.5
     assert conf.limits.max_retries == 1
     assert conf.cli.auto_copy is True
+    assert conf.cli.show_status is False
     assert conf.server.port == 8765
     assert conf.server.token is None
     assert conf.server.allowed_origins == ()
@@ -33,6 +34,7 @@ max_retries       = 2
 
 [cli]
 auto_copy = false
+show_status = true
 
 [server]
 port = 9000
@@ -45,6 +47,7 @@ allowed_origins = ["chrome-extension://aaaa"]
     assert conf.limits.max_changed_ratio == 0.4
     assert conf.limits.max_retries == 2
     assert conf.cli.auto_copy is False
+    assert conf.cli.show_status is True
     assert conf.server.port == 9000
     assert conf.server.token == "abc123"
     assert conf.server.allowed_origins == ("chrome-extension://aaaa",)

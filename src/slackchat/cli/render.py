@@ -46,18 +46,14 @@ def _meta_line(result: Result) -> str:
     return " · ".join(parts)
 
 
-def render_result(result: Result, *, color: bool) -> str:
-    """The human view: clean output, then how it got there.
-
-    Translation always rewrites the whole sentence, so the diff and the
-    changed-ratio figure carry no signal there. Both are correction-only.
-    """
+def render_result(result: Result, *, color: bool, show_status: bool) -> str:
     lines = [result.output, ""]
     if result.error:
         lines.append(_paint(f"error: {result.error}", RED, color))
         return "\n".join(lines).rstrip() + "\n"
 
-    lines.append(_paint(f"  {_meta_line(result)}", DIM, color))
+    if show_status:
+        lines.append(_paint(f"  {_meta_line(result)}", DIM, color))
     if result.mode != "translation":
         lines.append(f"  {render_inline_diff(result.changes, color=color)}")
     if result.flags:

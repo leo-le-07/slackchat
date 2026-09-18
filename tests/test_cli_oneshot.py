@@ -3,7 +3,7 @@ import os
 import pytest
 
 from slackchat.cli import main as cli
-from slackchat.config import Config
+from slackchat.config import CliConfig, Config
 
 
 @pytest.fixture
@@ -26,13 +26,38 @@ def wire(monkeypatch, isolated_paths, fake_provider):
 
 
 def test_one_shot_prints_output_and_diff(wire, capsys):
-    wire("I finished the task we discussed yesterday.")
+    wire(
+        "I finished the task we discussed yesterday.",
+        config=Config(cli=CliConfig(show_status=True)),
+    )
     code = cli.main(["I has finish the task we discussed yesterday."])
     out = capsys.readouterr().out
     assert code == cli.EXIT_OK
     assert out.splitlines()[0] == "I finished the task we discussed yesterday."
     assert "[-has finish-]" in out
     assert "correction" in out
+
+
+def test_status_line_is_hidden_by_default(wire, capsys):
+    wire("I finished the task we discussed yesterday.")
+    code = cli.main(["I has finish the task we discussed yesterday."])
+    out = capsys.readouterr().out
+    assert code == cli.EXIT_OK
+    assert "[-has finish-]" in out  # diff still shown
+    assert "claude-haiku-4-5" not in out
+    assert "ms ·" not in out
+
+
+def test_status_line_shows_when_enabled_in_config(wire, capsys):
+    wire(
+        "I finished the task we discussed yesterday.",
+        config=Config(cli=CliConfig(show_status=True)),
+    )
+    code = cli.main(["I has finish the task we discussed yesterday."])
+    out = capsys.readouterr().out
+    assert code == cli.EXIT_OK
+    assert "correction" in out
+    assert "claude-haiku-4-5" in out
 
 
 def test_raw_prints_only_the_output_text(wire, capsys):
@@ -43,7 +68,7 @@ def test_raw_prints_only_the_output_text(wire, capsys):
 
 
 def test_mode_flag_forces_the_mode(wire, capsys):
-    provider = wire("I am done.")
+    provider = wire("I am done.", config=Config(cli=CliConfig(show_status=True)))
     code = cli.main(["--mode", "translation", "I has finish"])
     assert code == cli.EXIT_OK
     assert "translation (forced)" in capsys.readouterr().out
@@ -58,7 +83,7 @@ def test_bad_mode_value_is_a_usage_error(wire, capsys):
 
 
 def test_vietnamese_auto_routes_to_translation(wire, capsys):
-    wire("I finished the task yesterday.")
+    wire("I finished the task yesterday.", config=Config(cli=CliConfig(show_status=True)))
     cli.main(["Tôi đã hoàn thành task hôm qua."])
     out = capsys.readouterr().out
     assert "translation" in out
