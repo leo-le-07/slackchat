@@ -48,7 +48,7 @@ def test_process_returns_the_result_as_json(client):
     assert body["changed_ratio"] == 0.25
     assert body["flags"] == []
     assert body["error"] is None
-    assert body["prompt_version"] == "1"
+    assert body["prompt_version"] == "2"
     assert len(body["prompt_hash"]) == 12
     assert body["cost_usd"] == pytest.approx(0.0002)
 

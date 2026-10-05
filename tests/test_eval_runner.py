@@ -110,7 +110,7 @@ def test_pass_rate_is_derivable_from_sql_afterwards(isolated_paths, fake_provide
     service = _service(_FAILING_REPLIES, isolated_paths, fake_provider)
     runner.run_suite(service, cases=CASES, out=lambda _l: None)
     conn = store.connect()
-    assert store.pass_rate(conn, "1") == (1, 2)
+    assert store.pass_rate(conn, "2") == (1, 2)
 
 
 def test_compare_prints_both_versions(isolated_paths, sample_result, capsys):

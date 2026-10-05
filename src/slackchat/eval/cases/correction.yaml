@@ -50,6 +50,14 @@
     unchanged: true
   # The writer's own em dash. Removing it would itself be an over-edit.
 
+- id: noop-011
+  mode: correction
+  input: "The sheet is for ourselves, internal team.\nHenri will help assemble a deck for client purposes.\nSo in the end, the client can see all of that info."
+  assert:
+    unchanged: true
+  # Hard line breaks mid-paragraph must survive; the model must not rewrap
+  # them into one flowing paragraph.
+
 - id: fix-001
   mode: correction
   input: "I has finish the task yesterday."

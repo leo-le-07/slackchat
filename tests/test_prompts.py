@@ -30,7 +30,7 @@ def test_placeholder_is_resolved(mode):
 
 
 def test_version_comes_from_the_template_file():
-    assert load_prompt("correction").version == "1"
+    assert load_prompt("correction").version == "2"
 
 
 def test_hash_is_twelve_hex_chars_of_sha256_of_the_resolved_text():
