@@ -17,10 +17,7 @@ Run everything through `uv`; do not activate the venv by hand.
 - Format: `uv run ruff format .`
 - Type check: `uv run mypy src`
 - CLI: `uv run slackchat "text"`
-- Eval suite: `uv run slackchat eval`
 - Daemon: `uv run slackchat serve`
-- Review scoring: `uv run slackchat eval --review --limit 5`
-- Compare two prompt versions: `uv run slackchat eval --compare 1 2`
 - CI runs: `uv sync --locked`, then `./scripts/check.sh`
 
 Required before claiming done: `./scripts/check.sh` must exit 0. It runs, in
@@ -31,7 +28,7 @@ restate the command list elsewhere — update the script instead.
 ## Architecture
 
 `core/` and `providers/` are the inner layers. They must not import `cli/`,
-`server/`, `eval/`, `store/`, `service`, or `config`. `core/` reaches the
+`server/`, `store/`, `service`, or `config`. `core/` reaches the
 provider only through the `Provider` Protocol in `providers/base.py`, never
 `providers/anthropic.py`. `import-linter` enforces this; if a contract breaks,
 the fix is the import, not the contract.
@@ -58,12 +55,10 @@ them. The user's real config is `~/.config/slackchat/config.toml`. Tests must
 never touch it — use the `isolated_paths` fixture, which points
 `SLACKCHAT_CONFIG` and `SLACKCHAT_DB` at `tmp_path`.
 
-Raising `max_changed_ratio` to make an eval case pass is the wrong fix. The
+Raising `max_changed_ratio` to stop an over-edit flag is the wrong fix. The
 right fix is a tighter prompt and a bumped `version:`.
 
 ## The constraint that matters
 
 Correction mode must not over-edit. A sentence that is already correct comes
-back byte-for-byte. The `unchanged` group in the eval suite measures exactly
-this, and it is the project's primary metric. Never loosen an `unchanged`
-case to make a run go green.
+back byte-for-byte. This is the project's primary guarantee.

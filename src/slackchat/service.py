@@ -1,4 +1,4 @@
-"""The one wiring layer. CLI, server and eval runner all come through here.
+"""The one wiring layer. CLI and server both come through here.
 
 ``core/`` knows nothing about config files, price tables or the database.
 This module knows about all three and about nothing else, which is what makes

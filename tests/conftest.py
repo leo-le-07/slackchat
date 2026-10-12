@@ -72,7 +72,7 @@ def fake_provider():
 
 @pytest.fixture
 def limits():
-    return Limits(max_changed_ratio=0.25, max_length_ratio=1.5, max_retries=1)
+    return Limits(max_changed_ratio=0.25, max_retries=1)
 
 
 @pytest.fixture

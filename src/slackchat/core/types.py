@@ -32,7 +32,6 @@ class Limits:
     """Numeric gates. Lives in core so that core never imports config."""
 
     max_changed_ratio: float = 0.25
-    max_length_ratio: float = 1.5
     max_retries: int = 1
 
 

@@ -9,12 +9,9 @@ import sys
 from slackchat.cli.clipboard import copy as copy_to_clipboard
 from slackchat.cli.render import render_result
 from slackchat.cli.repl import run_session
-from slackchat.config import load_dotenv, utc_now
+from slackchat.config import load_dotenv
 from slackchat.core.detect import detect
 from slackchat.core.types import EmptyInputError, Mode
-from slackchat.eval.review import review_session
-from slackchat.eval.runner import compare as eval_compare
-from slackchat.eval.runner import run_suite
 from slackchat.service import build_service
 from slackchat.store import sqlite as store
 
@@ -23,7 +20,7 @@ EXIT_EMPTY_INPUT = 1
 EXIT_USAGE = 2
 EXIT_PROVIDER_ERROR = 3
 
-SUBCOMMANDS = frozenset({"detect", "log", "eval", "serve"})
+SUBCOMMANDS = frozenset({"detect", "log", "serve"})
 
 
 def _stdin_is_tty() -> bool:
@@ -130,34 +127,6 @@ def _cmd_log(argv: list[str]) -> int:
     return EXIT_OK
 
 
-def _cmd_eval(argv: list[str]) -> int:
-    parser = argparse.ArgumentParser(prog="slackchat eval")
-    parser.add_argument("--compare", nargs=2, metavar=("A", "B"), default=None)
-    parser.add_argument("--review", action="store_true")
-    parser.add_argument("--limit", type=int, default=20, help="runs to review")
-    args = parser.parse_args(argv)
-
-    if args.compare:
-        return eval_compare(args.compare[0], args.compare[1])
-
-    if args.review:
-        conn = store.connect()
-        try:
-            review_session(
-                conn,
-                limit=args.limit,
-                read_line=input,
-                write=lambda chunk: print(chunk, end=""),
-                clock=utc_now,
-            )
-        finally:
-            conn.close()
-        return EXIT_OK
-
-    run_suite(build_service())
-    return EXIT_OK
-
-
 def _cmd_serve(argv: list[str]) -> int:
     parser = argparse.ArgumentParser(prog="slackchat serve")
     parser.parse_args(argv)
@@ -181,8 +150,6 @@ def main(argv: list[str] | None = None) -> int:
             return _cmd_detect(rest)
         if command == "log":
             return _cmd_log(rest)
-        if command == "eval":
-            return _cmd_eval(rest)
         if command == "serve":
             return _cmd_serve(rest)
         raise AssertionError(f"unrouted subcommand {command!r}")

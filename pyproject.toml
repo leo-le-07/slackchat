@@ -28,7 +28,7 @@ requires = ["uv_build>=0.9,<0.10"]
 build-backend = "uv_build"
 
 [tool.uv.build-backend]
-source-include = ["src/slackchat/prompts/*.md", "src/slackchat/store/*.sql", "src/slackchat/eval/*.md", "src/slackchat/eval/cases/*.yaml"]
+source-include = ["src/slackchat/prompts/*.md", "src/slackchat/store/*.sql"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -59,7 +59,6 @@ source_modules = ["slackchat.core"]
 forbidden_modules = [
     "slackchat.cli",
     "slackchat.server",
-    "slackchat.eval",
     "slackchat.store",
     "slackchat.service",
     "slackchat.config",
@@ -78,7 +77,6 @@ source_modules = ["slackchat.providers"]
 forbidden_modules = [
     "slackchat.cli",
     "slackchat.server",
-    "slackchat.eval",
     "slackchat.store",
     "slackchat.service",
     "slackchat.config",

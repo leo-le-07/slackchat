@@ -1,7 +1,7 @@
 """``process()`` — the single entry point of the whole system.
 
-The CLI renders what this returns. The server serialises it. The eval runner
-asserts on it. There is deliberately no second code path.
+The CLI renders what this returns. The server serialises it. There is
+deliberately no second code path.
 """
 
 from __future__ import annotations

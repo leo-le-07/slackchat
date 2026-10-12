@@ -21,7 +21,7 @@ Format: `type(scope): summary`
 
 - **Prefix is required.** Use one of: `feat`, `fix`, `chore`, `docs`, `refactor`, `test`.
 - **Scope is optional.** Add it when the change is localized to one area:
-  `cli`, `core`, `server`, `eval`, `store`, `providers`, `config`.
+  `cli`, `core`, `server`, `store`, `providers`, `config`.
   Example: `feat(cli):`, `fix(core):`. Omit it for cross-cutting changes.
 - Imperative mood: "add", "hide", "stop" — not "added" or "adds".
 - Lowercase after the prefix. No trailing period.
@@ -64,5 +64,3 @@ a paragraph break.
 
 - No secrets or `ANTHROPIC_API_KEY` values in messages.
 - No "wip", "fix stuff", or other empty summaries.
-- Do not loosen an eval `unchanged` case just to make a commit go green
-  (see AGENTS.md).

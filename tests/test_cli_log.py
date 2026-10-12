@@ -31,15 +31,6 @@ def test_a_run_is_logged_with_its_client(logged):
     assert row["output"] == "I finished the task we discussed yesterday."
 
 
-def test_the_client_column_separates_eval_from_real_use(logged):
-    conn = logged(
-        ["I has finish the task we discussed yesterday."],
-        ["I finished the task we discussed yesterday."],
-        client="eval",
-    )
-    assert conn.execute("SELECT client FROM runs").fetchone()[0] == "eval"
-
-
 def test_changed_ratio_is_stored_so_trends_need_no_rediff(logged):
     conn = logged(
         ["I has finish the task we discussed yesterday."],

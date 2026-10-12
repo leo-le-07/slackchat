@@ -10,7 +10,6 @@ def test_defaults_when_no_file(tmp_path):
     assert conf.provider.name == "anthropic"
     assert conf.provider.model == "claude-haiku-4-5"
     assert conf.limits.max_changed_ratio == 0.25
-    assert conf.limits.max_length_ratio == 1.5
     assert conf.limits.max_retries == 1
     assert conf.cli.auto_copy is True
     assert conf.cli.show_status is False
@@ -29,7 +28,6 @@ model = "claude-haiku-4-5"
 
 [limits]
 max_changed_ratio = 0.4
-max_length_ratio  = 2.0
 max_retries       = 2
 
 [cli]

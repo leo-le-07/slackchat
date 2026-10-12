@@ -25,7 +25,7 @@ def test_the_real_prompt_and_price_table_are_wired_in(isolated_paths, fake_provi
 
 
 def test_limits_come_from_config(isolated_paths, fake_provider):
-    tight = Config(limits=Limits(max_changed_ratio=0.0, max_length_ratio=1.5, max_retries=0))
+    tight = Config(limits=Limits(max_changed_ratio=0.0, max_retries=0))
     provider = fake_provider("Totally different sentence entirely.")
     result = svc.build_service(tight, provider=provider).run("Original text here.", client="cli")
     assert "over_edit_suspected" in result.flags

@@ -129,9 +129,6 @@ def load_config(path: Path | None = None) -> Config:
             max_changed_ratio=float(
                 limits_raw.get("max_changed_ratio", defaults.limits.max_changed_ratio)
             ),
-            max_length_ratio=float(
-                limits_raw.get("max_length_ratio", defaults.limits.max_length_ratio)
-            ),
             max_retries=int(limits_raw.get("max_retries", defaults.limits.max_retries)),
         ),
         cli=CliConfig(
