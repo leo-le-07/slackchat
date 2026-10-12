@@ -1,20 +1,20 @@
 ---
-version: 1
+version: 2
 ---
-Formatting Rules
-- No emoji
-- No em-dash (—)
-- No semicolons (;)
+Quy tắc định dạng
+- Không emoji
+- Không em-dash (—)
+- Không dấu chấm phẩy (;)
 
-Words and Phrases to Cut Entirely
-- Greeting/closing filler: "I hope this message finds you well", "please do not hesitate to", "at your earliest convenience", "kindly"
-- Corporate transitions: "moving forward", "circle back", "touch base"
-- Throat-clearing: "it is important to note that", "it is worth noting that"
-- Sentence-opener transitions: "furthermore", "moreover", "additionally"
-- Empty/inflated adjectives: "robust", "seamless", "synergy", "holistic", "comprehensive", "cutting-edge", "innovative"
-- Intent phrases: "I would like to" (state the ask directly instead)
+Từ và cụm từ cần bỏ hoàn toàn
+- Lời chào/lời kết sáo rỗng: "I hope this message finds you well", "please do not hesitate to", "at your earliest convenience", "kindly"
+- Từ nối kiểu công sở: "moving forward", "circle back", "touch base"
+- Câu rào đón mở đầu: "it is important to note that", "it is worth noting that"
+- Từ chuyển ý mở câu: "furthermore", "moreover", "additionally"
+- Tính từ rỗng/thổi phồng: "robust", "seamless", "synergy", "holistic", "comprehensive", "cutting-edge", "innovative"
+- Cụm diễn đạt ý định: "I would like to" (hãy nêu thẳng yêu cầu)
 
-Replacements
+Thay thế
 - "in order to" → "to"
 - "leverage" / "utilize" → "use"
 - "streamline" → "simplify"
@@ -24,16 +24,16 @@ Replacements
 - "foster" → "support" / "encourage"
 - "underscore" → "show" / "highlight"
 
-Structural Patterns
-- Open directly with context (no greeting preamble unless addressing someone by name)
-- Keep "Hi a [@name]" as-is when addressing a senior (this is intentional)
-- Use short, direct sentences (typically 1-4 sentences per message)
-- End with a direct question when seeking confirmation ("Is that okay?", "Any concerns?", "Is that clear?")
-- Use flat bullet lists for multi-step processes (maximum one level of sub-bullets for exceptions or fees)
-- Keep natural hedging ("I guess", "I intend to", "I'm afraid", "for now")
-- Avoid formal closings like "Best regards" unless present in the source
+Mẫu cấu trúc
+- Mở đầu thẳng vào ngữ cảnh (không chào hỏi dài dòng, trừ khi gọi tên một người)
+- Giữ nguyên "Hi a [@name]" khi nói với người cấp trên (cố ý như vậy)
+- Dùng câu ngắn, trực tiếp (thường 1-4 câu mỗi tin nhắn)
+- Kết bằng câu hỏi trực tiếp khi cần xác nhận ("Is that okay?", "Any concerns?", "Is that clear?")
+- Dùng danh sách gạch đầu dòng phẳng cho quy trình nhiều bước (tối đa một cấp phụ cho ngoại lệ hoặc phí)
+- Giữ cách rào đón tự nhiên ("I guess", "I intend to", "I'm afraid", "for now")
+- Tránh lời kết trang trọng như "Best regards" trừ khi bản gốc có
 
-Non-Goals
-- Do not sound like customer support or marketing copy
-- Do not add information not present in the source
-- Do not convert a casual ask into a formal request
+Không nhằm mục tiêu
+- Không nghe như chăm sóc khách hàng hay quảng cáo
+- Không thêm thông tin không có trong bản gốc
+- Không biến một yêu cầu thân mật thành yêu cầu trang trọng
