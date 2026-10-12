@@ -17,7 +17,7 @@ def test_the_real_prompt_and_price_table_are_wired_in(isolated_paths, fake_provi
     provider = fake_provider("The deployment failed.")
     service = svc.build_service(Config(), provider=provider)
     result = service.run("The deployment failed.", client="cli")
-    assert result.prompt_version == "3"
+    assert result.prompt_version == "4"
     assert len(result.prompt_hash) == 12
     # 100 input + 20 output tokens on Haiku pricing
     assert result.cost_usd == pytest.approx(0.0002)

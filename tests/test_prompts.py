@@ -30,7 +30,7 @@ def test_placeholder_is_resolved(mode):
 
 
 def test_version_comes_from_the_template_file():
-    assert load_prompt("correction").version == "3"
+    assert load_prompt("correction").version == "4"
 
 
 def test_hash_is_twelve_hex_chars_of_sha256_of_the_resolved_text():
@@ -69,9 +69,9 @@ def test_missing_placeholder_is_an_error(tmp_path):
         load_prompt("correction", prompts_dir=tmp_path)
 
 
-def test_correction_prompt_forbids_introducing_banned_punctuation():
+def test_correction_prompt_bans_em_dash_and_semicolon():
     text = load_prompt("correction").text
-    assert "Không bao giờ thêm em dash hoặc dấu chấm phẩy" in text
+    assert "Không em-dash (—)" in text and "Không dấu chấm phẩy (;)" in text
 
 
 def test_translation_prompt_forbids_adding_information():
