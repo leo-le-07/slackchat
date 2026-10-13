@@ -1,36 +1,36 @@
 ---
 name: prompt-change
-description: Edit a correction prompt in slackchat and check the new output against the golden set. Use whenever src/slackchat/prompts/*.md changes, or when Leo reports a bad real-world output and wants the prompt fixed.
+description: Sửa prompt correction trong slackchat và kiểm tra output mới với golden set. Dùng mỗi khi src/slackchat/prompts/*.md thay đổi, hoặc khi Leo báo một output thực tế bị sai và muốn sửa prompt.
 ---
 
-# Changing a correction prompt (slackchat)
+# Đổi prompt correction (slackchat)
 
-The golden set is `evals/correction.yaml`. `unchanged` cases must come back
-byte-for-byte; `needs_fix` cases have hard `include`/`exclude` tokens plus a
-soft `reference` diff. Needs `ANTHROPIC_API_KEY` (a few cents per run).
+Golden set là `evals/correction.yaml`. Các case `unchanged` phải trả về
+nguyên byte; các case `needs_fix` có token `include`/`exclude` cứng và một
+diff `reference` mềm. Cần `ANTHROPIC_API_KEY` (vài cent mỗi lần chạy).
 
-## Steps
+## Các bước
 
-1. **Baseline.** Note the current `version:` in the prompt. If
-   `uv run slackchat eval --compare N N` says there are no eval runs for it,
-   run `uv run slackchat eval` first. Without a baseline there is nothing to
-   compare against.
-2. **Edit the prompt and bump `version:`.** Never raise `max_changed_ratio`.
-   Never edit or loosen an `unchanged` case to make a run pass.
-3. **Run** `uv run slackchat eval`. A `WARNING: ... bump version:` means the
-   text changed under an old version number; fix that before going on.
-4. **Compare** `uv run slackchat eval --compare OLD NEW`. Exit 1 means an
-   `unchanged` case regressed.
-5. **Report to Leo, in this order:** `unchanged` regressions (blocker), cases
-   that flipped (▼/▲), outputs that differ between versions with their diffs.
-   Do not call the new prompt "better". Show the evidence and ask Leo to judge
-   the diffs. One run per case is noisy: re-run before blaming a single flip.
-6. **Done** when `./scripts/check.sh` exits 0. Commit with the `git-commit`
-   skill.
+1. **Baseline.** Ghi lại `version:` hiện tại trong prompt. Nếu
+   `uv run slackchat eval --compare N N` báo không có eval run nào cho
+   version đó, chạy `uv run slackchat eval` trước. Không có baseline thì
+   không có gì để so sánh.
+2. **Sửa prompt và tăng `version:`.** Không bao giờ nâng `max_changed_ratio`.
+   Không bao giờ sửa hay nới lỏng case `unchanged` để run pass.
+3. **Chạy** `uv run slackchat eval`. Nếu có `WARNING: ... bump version:` nghĩa
+   là text đã đổi mà số version cũ vẫn giữ; sửa việc này trước khi đi tiếp.
+4. **So sánh** `uv run slackchat eval --compare OLD NEW`. Exit 1 nghĩa là một
+   case `unchanged` bị regress.
+5. **Báo cáo cho Leo, theo thứ tự:** các regression của `unchanged` (chặn),
+   các case bị đảo kết quả (▼/▲), các output khác nhau giữa hai version kèm
+   diff. Đừng nói prompt mới "tốt hơn". Đưa bằng chứng và nhờ Leo đánh giá
+   các diff. Mỗi case chỉ chạy một lần thì nhiễu: chạy lại trước khi đổ lỗi
+   cho một case bị đảo.
+6. **Xong** khi `./scripts/check.sh` exit 0. Commit bằng skill `git-commit`.
 
-## When Leo reports a bad output
+## Khi Leo báo output sai
 
-Add it to `evals/correction.yaml` first (`needs_fix` with `include`/`exclude`
-tokens that capture the fix, and a `reference`), run `uv run slackchat eval`
-and watch it fail, then change the prompt. A prompt change without a case that
-failed first is a guess.
+Thêm nó vào `evals/correction.yaml` trước (`needs_fix` với token
+`include`/`exclude` thể hiện chỗ cần sửa, và một `reference`), chạy
+`uv run slackchat eval` và xem nó fail, rồi mới đổi prompt. Đổi prompt mà
+không có case đã fail trước đó chỉ là đoán mò.
