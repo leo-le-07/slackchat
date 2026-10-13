@@ -27,6 +27,10 @@ def connect(path: Path | None = None) -> sqlite3.Connection:
     conn.execute("PRAGMA journal_mode=WAL")
     conn.execute("PRAGMA foreign_keys=ON")
     conn.executescript(_SCHEMA_PATH.read_text(encoding="utf-8"))
+    # shortcut: one-off upgrade for logs written before `forced` was dropped;
+    # build a real migration step if the schema changes a second time.
+    if any(row["name"] == "forced" for row in conn.execute("PRAGMA table_info(runs)")):
+        conn.execute("ALTER TABLE runs DROP COLUMN forced")
     conn.commit()
     return conn
 
@@ -35,17 +39,16 @@ def insert_run(conn: sqlite3.Connection, result: Result, client: str) -> None:
     conn.execute(
         """
         INSERT INTO runs (
-          run_id, created_at, client, mode, forced, input, output, provider,
+          run_id, created_at, client, mode, input, output, provider,
           model, prompt_version, prompt_hash, input_tokens, output_tokens,
           cost_usd, latency_ms, changed_ratio, flags, error
-        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
         """,
         (
             result.run_id,
             result.created_at,
             client,
             result.mode,
-            int(result.forced),
             result.original,
             result.output,
             result.provider,

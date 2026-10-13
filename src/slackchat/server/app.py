@@ -7,7 +7,6 @@ that the CLI does not have, the "one shared core service" property is gone.
 from __future__ import annotations
 
 import dataclasses
-from typing import Literal
 
 from fastapi import Depends, FastAPI, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -23,7 +22,6 @@ BIND_HOST = "127.0.0.1"
 
 class ProcessRequest(BaseModel):
     text: str
-    mode: Literal["correction", "translation"] | None = None
 
 
 def create_app(
@@ -59,7 +57,7 @@ def create_app(
     @app.post("/process", dependencies=[Depends(require_token)])
     def process_endpoint(payload: ProcessRequest) -> dict[str, object]:
         try:
-            result = resolved_service.run(payload.text, payload.mode, client="server")
+            result = resolved_service.run(payload.text, client="server")
         except EmptyInputError as exc:
             raise HTTPException(status_code=400, detail="input is empty") from exc
         return dataclasses.asdict(result)

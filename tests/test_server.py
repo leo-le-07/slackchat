@@ -44,7 +44,6 @@ def test_process_returns_the_result_as_json(client):
     body = response.json()
     assert body["output"] == "I finished the task we discussed yesterday."
     assert body["mode"] == "correction"
-    assert body["forced"] is False
     assert body["changed_ratio"] == 0.25
     assert body["flags"] == []
     assert body["error"] is None
@@ -79,15 +78,6 @@ def test_the_json_shape_matches_what_the_cli_saw(client):
     assert set(body) == {f.name for f in direct.__dataclass_fields__.values()}
 
 
-def test_an_explicit_mode_is_honoured(client):
-    api, _ = client(["I am done.", "I am done."])
-    body = api.post(
-        "/process", json={"text": "Tôi đã xong", "mode": "correction"}, headers=_headers()
-    ).json()
-    assert body["mode"] == "correction"
-    assert body["forced"] is True
-
-
 def test_a_missing_token_is_rejected(client):
     api, provider = client(["never used"])
     response = api.post("/process", json={"text": "hello"})
@@ -109,12 +99,6 @@ def test_empty_text_is_a_400_and_costs_nothing(client):
     assert provider.calls == []
     conn = store.connect()
     assert conn.execute("SELECT COUNT(*) FROM runs").fetchone()[0] == 0
-
-
-def test_a_bad_mode_value_is_a_422(client):
-    api, _ = client([])
-    response = api.post("/process", json={"text": "hi", "mode": "rewrite"}, headers=_headers())
-    assert response.status_code == 422
 
 
 def test_a_provider_error_is_a_200_with_the_error_in_the_body(client):

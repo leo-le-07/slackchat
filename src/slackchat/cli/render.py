@@ -38,8 +38,7 @@ def render_inline_diff(changes: list[Change], *, color: bool) -> str:
 
 def _meta_line(result: Result) -> str:
     cost = f"${result.cost_usd:.6f}" if result.cost_usd is not None else "cost n/a"
-    mode = f"{result.mode} (forced)" if result.forced else result.mode
-    parts = [mode]
+    parts: list[str] = [result.mode]
     if result.mode != "translation":
         parts.append(f"changed {round(result.changed_ratio * 100)}%")
     parts.extend([result.model, f"{result.latency_ms}ms", cost])

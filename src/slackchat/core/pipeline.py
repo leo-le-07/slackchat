@@ -14,7 +14,7 @@ from datetime import UTC, datetime
 from slackchat.core.detect import detect
 from slackchat.core.diffing import diff_words
 from slackchat.core.prompts import Prompt, load_prompt
-from slackchat.core.types import Change, EmptyInputError, Limits, Mode, Result
+from slackchat.core.types import Change, EmptyInputError, Limits, Result
 from slackchat.core.validate import (
     FLAG_BANNED_CHAR,
     FLAG_MECHANICAL,
@@ -49,7 +49,6 @@ def _dedupe(flags: list[str]) -> list[str]:
 
 def process(
     text: str,
-    mode: Mode | None = None,
     *,
     provider: Provider,
     limits: Limits,
@@ -61,6 +60,8 @@ def process(
     timer: Callable[[], float] | None = None,
 ) -> Result:
     """Detect, prompt, complete, sanitize, diff, validate, retry once, return.
+
+    The mode is always derived from ``text``: there is no way in to force one.
 
     ``cost_fn`` is injected, never imported: ``core/`` may not reach
     ``providers.pricing`` (contract 2, and ``import-linter`` sees function-level
@@ -80,9 +81,8 @@ def process(
     id_factory = id_factory or _new_id
     timer = timer or time.monotonic
 
-    resolved_mode: Mode = mode if mode is not None else detect(text)
-    forced = mode is not None
-    active_prompt = prompt if prompt is not None else load_prompt(resolved_mode)
+    mode = detect(text)
+    active_prompt = prompt if prompt is not None else load_prompt(mode)
 
     run_id = id_factory()
     created_at = clock()
@@ -105,8 +105,7 @@ def process(
                 run_id=run_id,
                 original=text,
                 output="",
-                mode=resolved_mode,
-                forced=forced,
+                mode=mode,
                 changes=[],
                 changed_ratio=0.0,
                 flags=_dedupe(flags),
@@ -128,7 +127,7 @@ def process(
         violations = find_violations(
             original=text,
             output=output,
-            mode=resolved_mode,
+            mode=mode,
             changed_ratio=changed_ratio,
             max_changed_ratio=limits.max_changed_ratio,
         )
@@ -154,8 +153,7 @@ def process(
         run_id=run_id,
         original=text,
         output=output,
-        mode=resolved_mode,
-        forced=forced,
+        mode=mode,
         changes=changes,
         changed_ratio=changed_ratio,
         flags=_dedupe(flags),

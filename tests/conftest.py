@@ -13,7 +13,6 @@ def make_result(**overrides) -> Result:
         "original": "I has finish",
         "output": "I finished",
         "mode": "correction",
-        "forced": False,
         "changes": [],
         "changed_ratio": 0.5,
         "flags": ["retried"],

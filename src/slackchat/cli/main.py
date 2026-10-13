@@ -11,7 +11,7 @@ from slackchat.cli.render import render_result
 from slackchat.cli.repl import run_session
 from slackchat.config import load_dotenv
 from slackchat.core.detect import detect
-from slackchat.core.types import EmptyInputError, Mode
+from slackchat.core.types import EmptyInputError
 from slackchat.service import build_service
 from slackchat.store import sqlite as store
 
@@ -44,12 +44,6 @@ def _oneshot_parser() -> argparse.ArgumentParser:
         "text", nargs="?", help="text to process; omit to read stdin or start a session"
     )
     parser.add_argument(
-        "--mode",
-        choices=["correction", "translation"],
-        default=None,
-        help="force a mode instead of detecting it",
-    )
-    parser.add_argument(
         "--raw",
         action="store_true",
         help="print the processed text only, with no diff or metadata",
@@ -57,10 +51,10 @@ def _oneshot_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def _run_oneshot(text: str, *, mode: Mode | None, raw: bool) -> int:
+def _run_oneshot(text: str, *, raw: bool) -> int:
     service = build_service()
     try:
-        result = service.run(text, mode, client="cli")
+        result = service.run(text, client="cli")
     except EmptyInputError:
         print("slackchat: input is empty", file=sys.stderr)
         return EXIT_EMPTY_INPUT
@@ -157,10 +151,10 @@ def main(argv: list[str] | None = None) -> int:
     parsed = _oneshot_parser().parse_args(args)
 
     if parsed.text is not None:
-        return _run_oneshot(parsed.text, mode=parsed.mode, raw=parsed.raw)
+        return _run_oneshot(parsed.text, raw=parsed.raw)
 
     if not _stdin_is_tty():
-        return _run_oneshot(_read_stdin().strip("\n"), mode=parsed.mode, raw=parsed.raw)
+        return _run_oneshot(_read_stdin().strip("\n"), raw=parsed.raw)
 
     service = build_service()
     return run_session(

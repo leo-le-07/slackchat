@@ -2,8 +2,7 @@ CREATE TABLE IF NOT EXISTS runs (
   run_id         TEXT PRIMARY KEY,
   created_at     TEXT NOT NULL,        -- ISO8601 UTC
   client         TEXT NOT NULL,        -- cli | server
-  mode           TEXT NOT NULL,        -- correction | translation
-  forced         INTEGER NOT NULL,
+  mode           TEXT NOT NULL,        -- correction | translation (always detected)
   input          TEXT NOT NULL,
   output         TEXT NOT NULL,
   provider       TEXT NOT NULL,

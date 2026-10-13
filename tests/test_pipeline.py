@@ -24,7 +24,7 @@ def run(provider, text, limits, **kwargs):
     kwargs.setdefault("clock", lambda: "2026-08-23T10:00:00Z")
     kwargs.setdefault("id_factory", lambda: "run0001")
     kwargs.setdefault("timer", iter([0.0, 0.25, 0.25, 0.60]).__next__)
-    return process(text, kwargs.pop("mode", None), provider=provider, limits=limits, **kwargs)
+    return process(text, provider=provider, limits=limits, **kwargs)
 
 
 # --- happy paths ------------------------------------------------------------
@@ -35,7 +35,6 @@ def test_correction_of_a_real_error(fake_provider, limits):
     result = run(provider, "I has finish the task we discussed yesterday.", limits)
     assert result.output == "I finished the task we discussed yesterday."
     assert result.mode == "correction"
-    assert result.forced is False
     assert result.flags == []
     assert result.changed_ratio == 0.25
     assert result.run_id == "run0001"
@@ -64,14 +63,6 @@ def test_vietnamese_input_routes_to_translation(fake_provider, limits):
     provider = fake_provider("I finished the task yesterday.")
     result = run(provider, "Tôi đã hoàn thành task hôm qua.", limits)
     assert result.mode == "translation"
-    assert result.forced is False
-
-
-def test_explicit_mode_sets_forced_and_overrides_detection(fake_provider, limits):
-    provider = fake_provider("Tôi đã xong.")
-    result = run(provider, "Tôi đã xong.", limits, mode="correction")
-    assert result.mode == "correction"
-    assert result.forced is True
 
 
 def test_the_user_message_is_the_input_text(fake_provider, limits):

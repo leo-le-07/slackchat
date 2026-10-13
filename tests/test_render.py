@@ -12,7 +12,6 @@ def _result(**overrides):
         "original": "I has finish the task yesterday.",
         "output": "I finished the task yesterday.",
         "mode": "correction",
-        "forced": False,
         "changes": [
             Change("equal", "I", "I"),
             Change("replace", "has finish", "finished"),
@@ -72,10 +71,6 @@ def test_unknown_cost_renders_as_a_dash_not_a_zero():
     rendered = render_result(_result(cost_usd=None), color=False, show_status=True)
     assert "$0.000000" not in rendered
     assert "cost n/a" in rendered
-
-
-def test_forced_mode_is_marked():
-    assert "forced" in render_result(_result(forced=True), color=False, show_status=True)
 
 
 def test_flags_are_listed_on_their_own_line():

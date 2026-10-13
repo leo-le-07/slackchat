@@ -41,7 +41,6 @@ class Result:
     original: str
     output: str
     mode: Mode
-    forced: bool
     changes: list[Change]
     changed_ratio: float
     flags: list[str]

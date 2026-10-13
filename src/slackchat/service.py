@@ -11,8 +11,7 @@ from dataclasses import dataclass
 
 from slackchat.config import Config, load_config
 from slackchat.core.pipeline import process
-from slackchat.core.prompts import Prompt, load_prompt
-from slackchat.core.types import Mode, Result
+from slackchat.core.types import Result
 from slackchat.providers.base import Provider
 from slackchat.providers.pricing import cost_usd
 from slackchat.store import sqlite as store
@@ -37,7 +36,7 @@ class Service:
     config: Config
     provider: Provider
 
-    def run(self, text: str, mode: Mode | None = None, *, client: str) -> Result:
+    def run(self, text: str, *, client: str) -> Result:
         """Process ``text``, log the outcome, return the Result.
 
         Logging lives here and nowhere else: ``core/`` must not know about a
@@ -46,11 +45,9 @@ class Service:
         """
         result = process(
             text,
-            mode,
             provider=self.provider,
             limits=self.config.limits,
             model=self.config.provider.model,
-            prompt=self._prompt_for(text, mode),
             cost_fn=cost_usd,
         )
         conn = store.connect()
@@ -59,10 +56,6 @@ class Service:
         finally:
             conn.close()
         return result
-
-    def _prompt_for(self, text: str, mode: Mode | None) -> Prompt | None:
-        # Let the pipeline detect and load, unless the mode is already known.
-        return load_prompt(mode) if mode is not None else None
 
 
 def build_service(config: Config | None = None, provider: Provider | None = None) -> Service:

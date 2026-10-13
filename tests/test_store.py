@@ -32,18 +32,12 @@ def test_insert_run_round_trips_every_column(conn):
     assert row["run_id"] == "run0001"
     assert row["client"] == "cli"
     assert row["mode"] == "correction"
-    assert row["forced"] == 0
     assert row["input"] == "I has finish"
     assert row["output"] == "I finished"
     assert row["changed_ratio"] == 0.5
     assert json.loads(row["flags"]) == ["retried"]
     assert row["cost_usd"] == 0.0002
     assert row["error"] is None
-
-
-def test_forced_is_stored_as_one(conn):
-    store.insert_run(conn, _result(forced=True), client="cli")
-    assert conn.execute("SELECT forced FROM runs").fetchone()[0] == 1
 
 
 def test_unknown_cost_is_stored_as_null_not_zero(conn):

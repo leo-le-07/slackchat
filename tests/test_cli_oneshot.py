@@ -67,27 +67,11 @@ def test_raw_prints_only_the_output_text(wire, capsys):
     assert capsys.readouterr().out == "I finished the task we discussed yesterday.\n"
 
 
-def test_mode_flag_forces_the_mode(wire, capsys):
-    provider = wire("I am done.", config=Config(cli=CliConfig(show_status=True)))
-    code = cli.main(["--mode", "translation", "I has finish"])
-    assert code == cli.EXIT_OK
-    assert "translation (forced)" in capsys.readouterr().out
-    assert len(provider.calls) == 1
-
-
-def test_bad_mode_value_is_a_usage_error(wire, capsys):
-    wire([])
-    with pytest.raises(SystemExit) as excinfo:
-        cli.main(["--mode", "rewrite", "text"])
-    assert excinfo.value.code == cli.EXIT_USAGE
-
-
 def test_vietnamese_auto_routes_to_translation(wire, capsys):
     wire("I finished the task yesterday.", config=Config(cli=CliConfig(show_status=True)))
     cli.main(["Tôi đã hoàn thành task hôm qua."])
     out = capsys.readouterr().out
     assert "translation" in out
-    assert "(forced)" not in out
 
 
 def test_detect_subcommand_prints_the_mode_and_calls_nothing(wire, capsys):
