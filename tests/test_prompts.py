@@ -75,4 +75,4 @@ def test_correction_prompt_bans_dashes_and_semicolon():
 
 
 def test_translation_prompt_forbids_adding_information():
-    assert "Không thêm gì không có trong đó." in load_prompt("translation").text
+    assert "giữ mọi ý trong bản gốc, không thêm, xoá thông tin" in load_prompt("translation").text
