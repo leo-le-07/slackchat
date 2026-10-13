@@ -25,12 +25,12 @@ def test_parse_frontmatter_tolerates_a_file_without_it():
 def test_placeholder_is_resolved(mode):
     prompt = load_prompt(mode)
     assert VOICE_PLACEHOLDER not in prompt.text
-    assert "Không em-dash" in prompt.text  # the voice body really got inlined
+    assert "Không emoji" in prompt.text  # the voice body really got inlined
     assert prompt.mode == mode
 
 
 def test_version_comes_from_the_template_file():
-    assert load_prompt("correction").version == "4"
+    assert load_prompt("correction").version == "5"
 
 
 def test_hash_is_twelve_hex_chars_of_sha256_of_the_resolved_text():
@@ -69,9 +69,9 @@ def test_missing_placeholder_is_an_error(tmp_path):
         load_prompt("correction", prompts_dir=tmp_path)
 
 
-def test_correction_prompt_bans_em_dash_and_semicolon():
+def test_correction_prompt_bans_dashes_and_semicolon():
     text = load_prompt("correction").text
-    assert "Không em-dash (—)" in text and "Không dấu chấm phẩy (;)" in text
+    assert "em-dash (—)" in text and "Không dấu chấm phẩy (;)" in text
 
 
 def test_translation_prompt_forbids_adding_information():

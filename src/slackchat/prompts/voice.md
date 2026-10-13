@@ -1,11 +1,14 @@
 ---
-version: 3
+version: 4
 ---
 
 Quy tắc định dạng
 
 - Không emoji
-- Không em-dash (—)
+- Không dùng dấu gạch để nối hai ý trong câu
+  - Gồm em-dash (—), en-dash (–), và dấu gạch " - " có khoảng trắng hai bên
+  - Dùng dấu chấm, dấu phẩy hoặc dấu hai chấm thay thế
+  - Gạch đầu dòng cho danh sách và gạch nối trong từ ghép (built-in, up-to-date) vẫn dùng bình thường
 - Không dấu chấm phẩy (;)
 
 Từ và cụm từ cần bỏ hoàn toàn
