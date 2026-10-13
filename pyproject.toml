@@ -59,6 +59,7 @@ source_modules = ["slackchat.core"]
 forbidden_modules = [
     "slackchat.cli",
     "slackchat.server",
+    "slackchat.eval",
     "slackchat.store",
     "slackchat.service",
     "slackchat.config",
@@ -77,6 +78,7 @@ source_modules = ["slackchat.providers"]
 forbidden_modules = [
     "slackchat.cli",
     "slackchat.server",
+    "slackchat.eval",
     "slackchat.store",
     "slackchat.service",
     "slackchat.config",

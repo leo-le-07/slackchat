@@ -9,9 +9,11 @@ import sys
 from slackchat.cli.clipboard import copy as copy_to_clipboard
 from slackchat.cli.render import render_result
 from slackchat.cli.repl import run_session
-from slackchat.config import load_dotenv
+from slackchat.config import load_config, load_dotenv
 from slackchat.core.detect import detect
 from slackchat.core.types import EmptyInputError
+from slackchat.eval.cases import load_cases
+from slackchat.eval.runner import compare, run_suite
 from slackchat.service import build_service
 from slackchat.store import sqlite as store
 
@@ -20,7 +22,7 @@ EXIT_EMPTY_INPUT = 1
 EXIT_USAGE = 2
 EXIT_PROVIDER_ERROR = 3
 
-SUBCOMMANDS = frozenset({"detect", "log", "serve"})
+SUBCOMMANDS = frozenset({"detect", "eval", "log", "serve"})
 
 
 def _stdin_is_tty() -> bool:
@@ -121,6 +123,27 @@ def _cmd_log(argv: list[str]) -> int:
     return EXIT_OK
 
 
+def _cmd_eval(argv: list[str]) -> int:
+    parser = argparse.ArgumentParser(prog="slackchat eval")
+    parser.add_argument(
+        "--compare",
+        nargs=2,
+        metavar=("A", "B"),
+        help="compare the latest eval runs of two correction prompt versions",
+    )
+    args = parser.parse_args(argv)
+
+    try:
+        cases = load_cases()
+    except ValueError as exc:
+        print(f"slackchat: {exc}", file=sys.stderr)
+        return EXIT_USAGE
+    if args.compare:
+        a, b = args.compare
+        return compare(a, b, cases, default_max_ratio=load_config().limits.max_changed_ratio)
+    return run_suite(build_service(), cases)
+
+
 def _cmd_serve(argv: list[str]) -> int:
     parser = argparse.ArgumentParser(prog="slackchat serve")
     parser.parse_args(argv)
@@ -142,6 +165,8 @@ def main(argv: list[str] | None = None) -> int:
         command, rest = args[0], args[1:]
         if command == "detect":
             return _cmd_detect(rest)
+        if command == "eval":
+            return _cmd_eval(rest)
         if command == "log":
             return _cmd_log(rest)
         if command == "serve":
