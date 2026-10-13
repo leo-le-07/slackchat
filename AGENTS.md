@@ -17,6 +17,8 @@ Run everything through `uv`; do not activate the venv by hand.
 - Format: `uv run ruff format .`
 - Type check: `uv run mypy src`
 - CLI: `uv run slackchat "text"`
+- Eval golden set: `uv run slackchat eval`
+- Compare prompt versions: `uv run slackchat eval --compare 5 6`
 - Daemon: `uv run slackchat serve`
 - CI runs: `uv sync --locked`, then `./scripts/check.sh`
 
@@ -61,4 +63,6 @@ right fix is a tighter prompt and a bumped `version:`.
 ## The constraint that matters
 
 Correction mode must not over-edit. A sentence that is already correct comes
-back byte-for-byte. This is the project's primary guarantee.
+back byte-for-byte. This is the project's primary guarantee. The `unchanged`
+cases in `evals/correction.yaml` measure it; never loosen one to go green.
+For any prompt edit, follow the `prompt-change` skill.

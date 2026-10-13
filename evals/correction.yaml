@@ -1,0 +1,419 @@
+# Golden set for the correction prompt. See .pi/skills/prompt-change/SKILL.md.
+# unchanged: output must equal input. needs_fix: include/exclude are hard checks,
+# reference is shown as a soft diff.
+
+- id: keep-ex01
+  group: unchanged
+  input: "Regarding the Dental Project, in the future it will be used as an example for ISO certification. We'll have some new developers joining. Our current developers are using Claude Code plus Novita DeepSeek. For these new developers, we'll provide Claude Code as well, but they can use a separate workspace, like dental-iso. I don't think they need to switch to Novita the way the current team does. Is that okay?"
+
+- id: keep-ex04
+  group: unchanged
+  input: "Hi a @Kenny Trinh is there any progress on this so far? It would be nice if we could provide quick updates, as Notion may not reflect the current status. Thanks"
+
+- id: keep-ex06
+  group: unchanged
+  input: "Hi folks, any recommendations for a voice-to-text app on Mac? I'm using https://wisprflow.ai/. The quality is good, especially for Vietnamese language (lol). But the free version is limited. Looking for something similar in quality but free"
+
+- id: keep-ex08
+  group: unchanged
+  input: "What's the cost to invite members? Is it free except for the fee to get the certs?\nThe process I suggest is this:\n* We announce to the team that our company has already joined CPN.\n* Anyone interested in getting Claude certified can ping us, and we can work together on how to create an account and link it under CodeLink CPN.\n    * Fee coverage will need to be discussed with the TM team.\n    * So our company doesn't need to pay anything until after passing the exam and getting certified.\nIs that clear?\n\nIn case we don't have guideline yet, we can ask someone interested in getting Claude certified to also look into the registration steps, fees, and how we can associate that credential with CodeLink CPN as our organization"
+
+- id: keep-ex10
+  group: unchanged
+  input: "3 services they mentioned seem larger and different in type compared to Copilot. We can reach out to Kieu Anh for further context if needed"
+
+# unreviewed: reference is the logged model output
+- id: fix-01
+  group: needs_fix
+  input: "Note: This doc is based on the earlier Estimation Principles doc, with role names corrected and the questions list and confidence ratings removed. When the team argree on this doc, we can deprecate the original one."
+  reference: "Note: This doc is based on the earlier Estimation Principles doc, with role names corrected and the questions list and confidence ratings removed. When the team agrees on this doc, we can deprecate the original one."
+  include: ["agrees"]
+  exclude: ["argree"]
+
+# unreviewed: reference drafted by the agent
+- id: fix-02
+  group: needs_fix
+  input: |-
+    The sheet is for ourself, internal team
+    Henri will help to assemble to a deck for client purpose. All of our assumptions, notes, questions will be there.
+    So in the end, Client can see all of that info
+  reference: |-
+    The sheet is for ourselves, internal team
+    Henri will help assemble it into a deck for client purposes. All of our assumptions, notes, and questions will be there.
+    So in the end, the client can see all of that info.
+  include: ["ourselves"]
+  exclude: ["ourself,"]
+
+# reference: v4 output approved in replay review
+- id: fix-03
+  group: needs_fix
+  input: "Is it conflict with Azure AI Foundry from Client’s tech stack request?"
+  reference: "Does it conflict with Azure AI Foundry from the client's tech stack request?"
+  include: ["conflict with"]
+  exclude: ["Is it conflict"]
+
+# unreviewed: reference drafted by the agent
+- id: fix-04
+  group: needs_fix
+  input: "we don’t have much info on this section. Like how we measure or consider model decision as a pass. That’s because we’re waiting for Client input in section 8?"
+  reference: "We don't have much info on this section yet, specifically how we measure or consider a model decision as a pass. Is that because we're waiting for Client input in section 8?"
+  include: ["We don"]
+  exclude: [" - "]
+
+# reference: v4 output approved in replay review
+- id: fix-05
+  group: needs_fix
+  input: "what's core difference in work responsiblities compare to AI Engineer + Fullstack?"
+  reference: "What's the core difference in work responsibilities between an AI Engineer and a Fullstack Engineer?"
+  include: ["difference in work responsibilities"]
+  exclude: ["responsiblities"]
+
+# unreviewed: reference drafted by the agent
+- id: fix-06
+  group: needs_fix
+  input: |-
+    For recommendation, as we lack ability to evaluate built-in agentic systems to compare with custom agentic, so likely we can skip it.
+    For evaluation, I get the requirements fro version 1 SoW, compare to version 2 PoC SoW, and come up with a table. Put some draft threshold. The goal is that we have something to rely on to evaluate whether our PoC output is okey or not. Can you help to review? Thanks
+  reference: |-
+    For recommendation, we'll skip it since we can't evaluate built-in agentic systems against custom agentic setups.
+    For evaluation, I pulled the requirements from version 1 SoW, compared them to version 2 PoC SoW, and created a table with draft thresholds. This gives us a baseline to check if our PoC output meets expectations. Can you review it?
+  exclude: ["okey", " fro "]
+
+# unreviewed: reference drafted by the agent
+- id: fix-07
+  group: needs_fix
+  input: "so it's crytal clear"
+  reference: "So it's crystal clear"
+  include: ["So it's crystal clear"]
+  exclude: ["crytal"]
+
+# reference: v4 output approved in replay review
+- id: fix-08
+  group: needs_fix
+  input: "There is request from LnE's PO that client ask them to connect Claude to Slack for report summary."
+  reference: "There is a request from LnE's PO that the client asked them to connect Claude to Slack for report summaries."
+  include: ["a request"]
+
+# reference: v4 output approved in replay review
+- id: fix-09
+  group: needs_fix
+  input: "PO use Claude to summary report from channels he joined. This report will be sent to Client."
+  reference: "PO uses Claude to summarize reports from channels he joined. This report will be sent to the client."
+  include: ["PO uses"]
+  exclude: ["PO use "]
+
+# reference: v4 output approved in replay review
+- id: fix-10
+  group: needs_fix
+  input: "I think there will be deeper questions rleated to AI so we need a Kenny to join"
+  reference: "I think there will be deeper questions related to AI, so we need a Kenny to join."
+  include: ["related"]
+  exclude: ["rleated"]
+
+# reference: v4 output approved in replay review
+- id: fix-11
+  group: needs_fix
+  input: "I guess not. Claude need to read messages and do a summary but itself. This is just my hypothesis."
+  reference: "I guess not. Claude needs to read messages and do a summary by itself. This is just my hypothesis."
+  include: ["Claude needs", "by itself"]
+  exclude: ["Claude need ", "but itself"]
+
+# unreviewed: reference drafted by the agent
+- id: fix-12
+  group: needs_fix
+  input: "but @phan trung last time I have some feedback for recent playbook, seems it still there"
+  reference: "But @phan trung last time I had some feedback for the recent playbook, and it seems it's still there"
+  include: ["But @phan", "had some feedback"]
+  exclude: ["have some feedback"]
+
+# unreviewed: reference drafted by the agent
+- id: fix-13
+  group: needs_fix
+  input: "test coverage is increasing significantly for dental-client repo, however, they don't store CI report over the time, so maybe we don't have data for show case as well"
+  reference: "Test coverage is increasing significantly for the dental-client repo, however, they don't store CI reports over time, so we might not have data to showcase."
+  include: ["Test coverage"]
+
+# reference: v4 output approved in replay review
+- id: fix-14
+  group: needs_fix
+  input: "Security skill: what's main reason to choose vbsec instead of Claude security skill? One thing to keep in mind, this is for review purpose (diff changes), not whole repo scanning periodly."
+  reference: "Security skill: what's the main reason to choose vbsec instead of Claude security skill? One thing to keep in mind, this is for review purposes (diff changes), not whole repo scanning periodically."
+  include: ["periodically"]
+  exclude: ["periodly"]
+
+# reference: v4 output approved in replay review
+- id: fix-15
+  group: needs_fix
+  input: "We may have quick call to clarify if it's convenient"
+  reference: "We may have a quick call to clarify if it's convenient"
+  include: ["a quick call"]
+
+# reference: v4 output approved in replay review
+- id: fix-16
+  group: needs_fix
+  input: "Hi team, few weeks ago I have a note about framework budget, especially for Dental project where we've used framework to inititave test setup for this project and transfer knwoledge to team. I would like to catch up with QA group whether we are awareness of this issue and try to help Dental project? One workaround suggestion Dental suggested was that turn off skills from framework but it shoudn't be the final solution"
+  reference: "Hi team, a few weeks ago I noted the framework budget issue, especially for the Dental project where we used the framework to initialize test setup and transfer knowledge to the team. I want to check with the QA group if we're aware of this and can help the Dental project. Dental suggested turning off skills from the framework as a workaround, but that shouldn't be the final solution."
+  include: ["knowledge"]
+  exclude: ["inititave", "knwoledge"]
+
+# reference: v4 output approved in replay review
+- id: fix-17
+  group: needs_fix
+  input: "I believe the team has disabled skills in framework since then"
+  reference: "I believe the team has disabled skills in the framework since then."
+  include: ["in the framework"]
+
+# reference: v4 output approved in replay review
+- id: fix-18
+  group: needs_fix
+  input: "For the skill/plugin consideration: start with the simple one first, improve and custom a long the way when needed"
+  reference: "For the skill/plugin consideration, start with the simple one first and improve and customize along the way when needed."
+  include: ["customize"]
+  exclude: ["a long the way"]
+
+# reference: v4 output approved in replay review
+- id: fix-19
+  group: needs_fix
+  input: "Hi @Thu a fullstack who familiar with AWS stack is suitable for this call. However, for goal deploy mainland China, I don't know if we have any tech expertise on this available to support"
+  reference: "Hi @Thu a fullstack developer familiar with the AWS stack is suitable for this call. However, for deploying to mainland China, I don't know if we have the tech expertise available to support that."
+  include: ["familiar with the AWS stack"]
+  exclude: ["who familiar"]
+
+# reference: v4 output approved in replay review
+- id: fix-20
+  group: needs_fix
+  input: "Hi Giang & Eton, a few weeks ago we discussed about tool standards for AI work (doc). The current doc initiative focuses Dev only. We planned to expand to other teams. Do we have any update or plan to update on this? I'm doing some report so this info is worth to mention if we have anything news. Thanks"
+  reference: "Hi Giang & Eton, a few weeks ago we discussed tool standards for AI work (doc). The current doc initiative focuses on Dev only. We planned to expand to other teams. Do we have any update or plan to update this? I'm doing some reporting, so this info is worth mentioning if we have anything new. Thanks"
+  include: ["discussed tool standards"]
+  exclude: ["discussed about"]
+
+# reference: v4 output approved in replay review
+- id: fix-21
+  group: needs_fix
+  input: "a @Kenny Trinh maybe I can support with 5 & 6 that I will collect project context and achivements from teams. You can help the rest. Is it okey?"
+  reference: "Hi a @Kenny Trinh, maybe I can support with 5 and 6 by collecting project context and achievements from teams. You can help with the rest. Is that okay?"
+  include: ["achievements"]
+  exclude: ["achivements", "okey"]
+
+# reference: v4 output approved in replay review
+- id: fix-22
+  group: needs_fix
+  input: "Good morning team, I have questions related to AI Agent in our project. Who should I contact to? Thanks"
+  reference: "Good morning team, I have questions related to AI Agent in our project. Who should I contact? Thanks"
+  include: ["Who should I contact?"]
+  exclude: ["contact to"]
+
+# unreviewed: reference drafted by the agent
+- id: fix-23
+  group: needs_fix
+  input: "awesome work a, looking forward for possitive "
+  reference: "Awesome work a, looking forward to positive"
+  include: ["work a,"]
+  exclude: ["possitive", "forward for"]
+
+# unreviewed: reference is the logged model output
+- id: fix-24
+  group: needs_fix
+  input: "We already partner so it's okey. The next goal is to upgrade our tier, I think it's recommendation not a must-have target at the moment, right?"
+  reference: "We already partner so it's okay. The next goal is to upgrade our tier, I think it's a recommendation not a must-have target at the moment, right?"
+  exclude: ["okey"]
+
+# unreviewed: reference is the logged model output
+- id: fix-25
+  group: needs_fix
+  input: "Regardless E11 notes, I believe all first 13th Epics is within 12 weeks, right @Sonny?"
+  reference: "Regardless of E11 notes, I believe all first 13 Epics are within 12 weeks, right @Sonny?"
+  include: ["Regardless of", "are within"]
+  exclude: ["Regardless E11", "Epics is"]
+
+# unreviewed: reference drafted by the agent
+- id: fix-26
+  group: needs_fix
+  input: |-
+    I received this proposal for cross-repo context from another team. Please note that writing style there has been edited by AI
+    What I need your help is based on your real experiemental with CodeGraph, can you validate feasible to set up git repo on root/parent repos so team can share config and use it?
+  reference: |-
+    I received this proposal for cross-repo context from another team. Please note that the writing style there has been edited by AI.
+    What I need your help with is based on your real experience with CodeGraph, can you validate whether it's feasible to set up a git repo on root/parent repos so the team can share config and use it?
+  include: ["experience"]
+  exclude: ["experiemental"]
+
+# unreviewed: reference is the logged model output
+- id: fix-27
+  group: needs_fix
+  input: "Key idea in the instruction doc is keep it simple first.\nAll the heavy work, coding style, etc.. you mentiond we can let agent explore while it's working. But when the team need to add them into the main instruction, they can reference to different instructions instead of direct and details in the main one. "
+  reference: |-
+    Key idea in the instruction doc is keep it simple first.
+    All the heavy work, coding style, etc. you mentioned we can let agent explore while it's working. But when the team needs to add them into the main instruction, they can reference different instructions instead of putting details directly in the main one.
+  include: ["mentioned", "team needs"]
+  exclude: ["mentiond", "team need "]
+
+# unreviewed: reference is the logged model output
+- id: fix-28
+  group: needs_fix
+  input: |-
+    Hi Dev Remix Agent team, please try to active on this. We should a details plan, try to make a progress, even it small.
+    Since I won't be able to follow everyone's daily details, I'd love for @Nguyen Luu (Mike) to faciliate this plan with our team on cooridnate, progress updates, try to resolve issues if possible.
+  reference: |-
+    Hi Dev Remix Agent team, please try to activate on this. We need a detailed plan, try to make progress, even if small.
+    Since I won't be able to follow everyone's daily details, I'd love for @Nguyen Luu (Mike) to facilitate this plan with our team on coordinating, progress updates, try to resolve issues if possible.
+  include: ["facilitate"]
+  exclude: ["faciliate", "cooridnate"]
+
+# unreviewed: reference is the logged model output
+- id: fix-29
+  group: needs_fix
+  input: "I have conflict meeting at this time, can we reschedule 30 mins early or latter? Thanks"
+  reference: "I have a conflict meeting at this time, can we reschedule 30 mins earlier or later? Thanks"
+  include: ["later"]
+  exclude: ["latter"]
+
+# unreviewed: reference drafted by the agent
+- id: fix-30
+  group: needs_fix
+  input: "assumping this is WIP playbook DevOps"
+  reference: "Assuming this is WIP playbook DevOps"
+  include: ["Assuming"]
+  exclude: ["assumping"]
+
+# unreviewed: reference drafted by the agent
+- id: fix-31
+  group: needs_fix
+  input: "silient training"
+  reference: "Silent training"
+  include: ["Silent training"]
+  exclude: ["silient"]
+
+# unreviewed: reference is the logged model output
+- id: fix-32
+  group: needs_fix
+  input: "Great a. I have quick questions on priority items:\nFor a get started pkg, is it a document, a repo, or anything like that? \nFor 'awareness', what's it specifictly? Like why we need AI Adoption in current SDLC forwards?"
+  reference: |-
+    Great a. I have quick questions on priority items:
+    For a get started pkg, is it a document, a repo, or anything like that?
+    For 'awareness', what's it specifically? Like why we need AI Adoption in current SDLC forwards?
+  include: ["specifically"]
+  exclude: ["specifictly"]
+
+# unreviewed: reference drafted by the agent
+- id: fix-33
+  group: needs_fix
+  input: "likely will be splitted and depreciated"
+  reference: "Likely will be split and deprecated"
+  include: ["split", "deprecated"]
+  exclude: ["splitted", "depreciated"]
+
+# unreviewed: reference drafted by the agent
+- id: fix-34
+  group: needs_fix
+  input: |-
+    Good news, Dental's dev is using Client's Claude Code for now
+    Not good news, not sure which project we will pilot Codex CLI no
+  reference: |-
+    Good news, Dental's dev is using Client's Claude Code for now
+    Not good news, not sure which project we will pilot Codex CLI on
+  include: ["CLI on"]
+  exclude: ["CLI no"]
+
+# unreviewed: reference is the logged model output
+- id: fix-35
+  group: needs_fix
+  input: "seems that our outline content cover pretty much compared to desired deliverable from PoC description, does it bring more work to us? "
+  reference: "seems that our outline content covers pretty much compared to the desired deliverable from the PoC description, does it bring more work to us?"
+  include: ["covers"]
+  exclude: ["content cover "]
+
+# unreviewed: reference drafted by the agent
+- id: fix-36
+  group: needs_fix
+  input: "Awesome, a Kenny when you have time, please export your diagram as .svg format so I can see it clearer? It's quite blur right now :smile: "
+  reference: "Awesome, a Kenny when you have time, please export your diagram as .svg format so I can see it clearer? It's quite blurry right now :smile:"
+  include: ["a Kenny", ":smile:", "blurry"]
+  exclude: ["blur right"]
+
+# unreviewed: reference drafted by the agent
+- id: fix-37
+  group: needs_fix
+  input: "Sure a. But if any concern when you start working on estimation and team structure, feel free to ping me. "
+  reference: "Sure a. But if there is any concern when you start working on estimation and team structure, feel free to ping me."
+  include: ["Sure a"]
+
+# unreviewed: reference is the logged model output
+- id: fix-38
+  group: needs_fix
+  input: "I'm trying to take note proposal process, there is an initialize here from TM team:"
+  reference: "I'm trying to take note of the proposal process, there is an initiative here from the TM team:"
+  include: ["initiative"]
+  exclude: ["initialize"]
+
+# unreviewed: reference drafted by the agent
+- id: fix-39
+  group: needs_fix
+  input: "I recall a @huy present roadmap before"
+  reference: "I recall a @huy presented a roadmap before"
+  include: ["a @huy"]
+
+# unreviewed: reference is the logged model output
+- id: fix-40
+  group: needs_fix
+  input: |-
+    1 - No we don't
+    2 - Confirmed: different project. Both is under 1 year and in progress. Otis' project was completed phase 1, in progress phase 2.
+  reference: |-
+    1 - No, we don't.
+    2 - Confirmed: different project. Both are under 1 year and in progress. Otis' project completed phase 1, now in progress phase 2.
+  include: ["Both are"]
+  exclude: ["Both is"]
+
+# unreviewed: reference is the logged model output
+- id: fix-41
+  group: needs_fix
+  input: "hi Henri, when will we have notion workspace for this proposal?"
+  reference: "Hi Henri, when will we have the Notion workspace for this proposal?"
+  include: ["Hi Henri", "Notion"]
+  exclude: ["notion"]
+
+# unreviewed: reference drafted by the agent (notes.md example 2)
+- id: fix-42
+  group: needs_fix
+  input: "Hi a @ka ISO Dental request 1 more seat claude.ai for designer @linh.duong . She's using her personal Claude, it's not suitable for ISO program. Is it okey to add more a?"
+  reference: "Hi a @ka, ISO Dental requests 1 more claude.ai seat for designer @linh.duong. She's using her personal Claude, which is not suitable for the ISO program. Is it okay to add more, a?"
+  include: ["okay", "@linh.duong"]
+  exclude: ["okey"]
+
+# unreviewed: reference drafted by the agent (notes.md example 5)
+- id: fix-43
+  group: needs_fix
+  input: "FYI we're forming a team to research how to register account to get cert under CodeLink CPN. There is also volunteer member who wants to take Certified Architect Certificate. \nWill keep you updates on this"
+  reference: |-
+    FYI we're forming a team to research how to register an account to get a cert under CodeLink CPN. There is also a volunteer member who wants to take the Certified Architect Certificate.
+    Will keep you updated on this
+  include: ["updated"]
+  exclude: ["keep you updates"]
+
+# unreviewed: reference drafted by the agent (notes.md example 7)
+- id: fix-44
+  group: needs_fix
+  input: "I have interview at 3:00 but please consider me as optional, thanks"
+  reference: "I have an interview at 3:00 but please consider me as optional, thanks"
+  include: ["an interview"]
+  exclude: ["I have interview"]
+
+# unreviewed: reference drafted by the agent (notes.md example 9)
+- id: fix-45
+  group: needs_fix
+  input: "I'm afraid the Oracle here is the whole ERM which is bigger then Oracle DB that Terry is supporting as DBA"
+  reference: "I'm afraid the Oracle here is the whole ERM which is bigger than the Oracle DB that Terry is supporting as DBA"
+  include: ["than"]
+  exclude: ["bigger then"]
+
+# unreviewed: reference drafted by the agent (notes.md example 11)
+- id: fix-46
+  group: needs_fix
+  input: |-
+    Good question, and totally agree. For now, if we not priority on this, we can just announce the info so anyone in the company interested in getting Claude certs can consider it.
+    For costs, we can discuss with the TM team. As per the normal process, our company only provides financial support for those who pass the exam.
+  reference: |-
+    Good question, and totally agree. For now, if it's not a priority, we can just announce the info so anyone in the company interested in getting Claude certs can consider it.
+    For costs, we can discuss with the TM team. As per the normal process, our company only provides financial support for those who pass the exam.
+  exclude: ["we not priority"]
