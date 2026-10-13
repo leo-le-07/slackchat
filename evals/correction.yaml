@@ -22,7 +22,7 @@
   group: unchanged
   input: "3 services they mentioned seem larger and different in type compared to Copilot. We can reach out to Kieu Anh for further context if needed"
 
-# unreviewed: reference is the logged model output
+# reference: logged model output, reviewed by Leo
 - id: fix-01
   group: needs_fix
   input: "Note: This doc is based on the earlier Estimation Principles doc, with role names corrected and the questions list and confidence ratings removed. When the team argree on this doc, we can deprecate the original one."
@@ -30,7 +30,7 @@
   include: ["agrees"]
   exclude: ["argree"]
 
-# unreviewed: reference drafted by the agent
+# reference: drafted by the agent, reviewed by Leo
 - id: fix-02
   group: needs_fix
   input: |-
@@ -52,7 +52,7 @@
   include: ["conflict with"]
   exclude: ["Is it conflict"]
 
-# unreviewed: reference drafted by the agent
+# reference: drafted by the agent, reviewed by Leo
 - id: fix-04
   group: needs_fix
   input: "we don’t have much info on this section. Like how we measure or consider model decision as a pass. That’s because we’re waiting for Client input in section 8?"
@@ -68,7 +68,7 @@
   include: ["difference in work responsibilities"]
   exclude: ["responsiblities"]
 
-# unreviewed: reference drafted by the agent
+# reference: drafted by the agent, reviewed by Leo
 - id: fix-06
   group: needs_fix
   input: |-
@@ -79,7 +79,7 @@
     For evaluation, I pulled the requirements from version 1 SoW, compared them to version 2 PoC SoW, and created a table with draft thresholds. This gives us a baseline to check if our PoC output meets expectations. Can you review it?
   exclude: ["okey", " fro "]
 
-# unreviewed: reference drafted by the agent
+# reference: drafted by the agent, reviewed by Leo
 - id: fix-07
   group: needs_fix
   input: "so it's crytal clear"
@@ -118,7 +118,7 @@
   include: ["Claude needs", "by itself"]
   exclude: ["Claude need ", "but itself"]
 
-# unreviewed: reference drafted by the agent
+# reference: drafted by the agent, reviewed by Leo
 - id: fix-12
   group: needs_fix
   input: "but @phan trung last time I have some feedback for recent playbook, seems it still there"
@@ -126,7 +126,7 @@
   include: ["But @phan", "had some feedback"]
   exclude: ["have some feedback"]
 
-# unreviewed: reference drafted by the agent
+# reference: drafted by the agent, reviewed by Leo
 - id: fix-13
   group: needs_fix
   input: "test coverage is increasing significantly for dental-client repo, however, they don't store CI report over the time, so maybe we don't have data for show case as well"
@@ -203,7 +203,7 @@
   include: ["Who should I contact?"]
   exclude: ["contact to"]
 
-# unreviewed: reference drafted by the agent
+# reference: drafted by the agent, reviewed by Leo
 - id: fix-23
   group: needs_fix
   input: "awesome work a, looking forward for possitive "
@@ -211,14 +211,14 @@
   include: ["work a,"]
   exclude: ["possitive", "forward for"]
 
-# unreviewed: reference is the logged model output
+# reference: logged model output, reviewed by Leo
 - id: fix-24
   group: needs_fix
   input: "We already partner so it's okey. The next goal is to upgrade our tier, I think it's recommendation not a must-have target at the moment, right?"
   reference: "We already partner so it's okay. The next goal is to upgrade our tier, I think it's a recommendation not a must-have target at the moment, right?"
   exclude: ["okey"]
 
-# unreviewed: reference is the logged model output
+# reference: logged model output, reviewed by Leo
 - id: fix-25
   group: needs_fix
   input: "Regardless E11 notes, I believe all first 13th Epics is within 12 weeks, right @Sonny?"
@@ -226,7 +226,7 @@
   include: ["Regardless of", "are within"]
   exclude: ["Regardless E11", "Epics is"]
 
-# unreviewed: reference drafted by the agent
+# reference: drafted by the agent, reviewed by Leo
 - id: fix-26
   group: needs_fix
   input: |-
@@ -238,7 +238,7 @@
   include: ["experience"]
   exclude: ["experiemental"]
 
-# unreviewed: reference is the logged model output
+# reference: logged model output, reviewed by Leo
 - id: fix-27
   group: needs_fix
   input: "Key idea in the instruction doc is keep it simple first.\nAll the heavy work, coding style, etc.. you mentiond we can let agent explore while it's working. But when the team need to add them into the main instruction, they can reference to different instructions instead of direct and details in the main one. "
@@ -248,7 +248,7 @@
   include: ["mentioned", "team needs"]
   exclude: ["mentiond", "team need "]
 
-# unreviewed: reference is the logged model output
+# reference: logged model output, reviewed by Leo
 - id: fix-28
   group: needs_fix
   input: |-
@@ -260,7 +260,7 @@
   include: ["facilitate"]
   exclude: ["faciliate", "cooridnate"]
 
-# unreviewed: reference is the logged model output
+# reference: logged model output, reviewed by Leo
 - id: fix-29
   group: needs_fix
   input: "I have conflict meeting at this time, can we reschedule 30 mins early or latter? Thanks"
@@ -268,7 +268,7 @@
   include: ["later"]
   exclude: ["latter"]
 
-# unreviewed: reference drafted by the agent
+# reference: drafted by the agent, reviewed by Leo
 - id: fix-30
   group: needs_fix
   input: "assumping this is WIP playbook DevOps"
@@ -276,7 +276,7 @@
   include: ["Assuming"]
   exclude: ["assumping"]
 
-# unreviewed: reference drafted by the agent
+# reference: drafted by the agent, reviewed by Leo
 - id: fix-31
   group: needs_fix
   input: "silient training"
@@ -284,7 +284,7 @@
   include: ["Silent training"]
   exclude: ["silient"]
 
-# unreviewed: reference is the logged model output
+# reference: logged model output, reviewed by Leo
 - id: fix-32
   group: needs_fix
   input: "Great a. I have quick questions on priority items:\nFor a get started pkg, is it a document, a repo, or anything like that? \nFor 'awareness', what's it specifictly? Like why we need AI Adoption in current SDLC forwards?"
@@ -295,7 +295,7 @@
   include: ["specifically"]
   exclude: ["specifictly"]
 
-# unreviewed: reference drafted by the agent
+# reference: drafted by the agent, reviewed by Leo
 - id: fix-33
   group: needs_fix
   input: "likely will be splitted and depreciated"
@@ -303,7 +303,7 @@
   include: ["split", "deprecated"]
   exclude: ["splitted", "depreciated"]
 
-# unreviewed: reference drafted by the agent
+# reference: drafted by the agent, reviewed by Leo
 - id: fix-34
   group: needs_fix
   input: |-
@@ -315,7 +315,7 @@
   include: ["CLI on"]
   exclude: ["CLI no"]
 
-# unreviewed: reference is the logged model output
+# reference: logged model output, reviewed by Leo
 - id: fix-35
   group: needs_fix
   input: "seems that our outline content cover pretty much compared to desired deliverable from PoC description, does it bring more work to us? "
@@ -323,7 +323,7 @@
   include: ["covers"]
   exclude: ["content cover "]
 
-# unreviewed: reference drafted by the agent
+# reference: drafted by the agent, reviewed by Leo
 - id: fix-36
   group: needs_fix
   input: "Awesome, a Kenny when you have time, please export your diagram as .svg format so I can see it clearer? It's quite blur right now :smile: "
@@ -331,14 +331,14 @@
   include: ["a Kenny", ":smile:", "blurry"]
   exclude: ["blur right"]
 
-# unreviewed: reference drafted by the agent
+# reference: drafted by the agent, reviewed by Leo
 - id: fix-37
   group: needs_fix
   input: "Sure a. But if any concern when you start working on estimation and team structure, feel free to ping me. "
   reference: "Sure a. But if there is any concern when you start working on estimation and team structure, feel free to ping me."
   include: ["Sure a"]
 
-# unreviewed: reference is the logged model output
+# reference: logged model output, reviewed by Leo
 - id: fix-38
   group: needs_fix
   input: "I'm trying to take note proposal process, there is an initialize here from TM team:"
@@ -346,14 +346,14 @@
   include: ["initiative"]
   exclude: ["initialize"]
 
-# unreviewed: reference drafted by the agent
+# reference: drafted by the agent, reviewed by Leo
 - id: fix-39
   group: needs_fix
   input: "I recall a @huy present roadmap before"
   reference: "I recall a @huy presented a roadmap before"
   include: ["a @huy"]
 
-# unreviewed: reference is the logged model output
+# reference: logged model output, reviewed by Leo
 - id: fix-40
   group: needs_fix
   input: |-
@@ -365,7 +365,7 @@
   include: ["Both are"]
   exclude: ["Both is"]
 
-# unreviewed: reference is the logged model output
+# reference: logged model output, reviewed by Leo
 - id: fix-41
   group: needs_fix
   input: "hi Henri, when will we have notion workspace for this proposal?"
@@ -373,7 +373,7 @@
   include: ["Hi Henri", "Notion"]
   exclude: ["notion"]
 
-# unreviewed: reference drafted by the agent (notes.md example 2)
+# reference: drafted by the agent, reviewed by Leo (notes.md example 2)
 - id: fix-42
   group: needs_fix
   input: "Hi a @ka ISO Dental request 1 more seat claude.ai for designer @linh.duong . She's using her personal Claude, it's not suitable for ISO program. Is it okey to add more a?"
@@ -381,7 +381,7 @@
   include: ["okay", "@linh.duong"]
   exclude: ["okey"]
 
-# unreviewed: reference drafted by the agent (notes.md example 5)
+# reference: drafted by the agent, reviewed by Leo (notes.md example 5)
 - id: fix-43
   group: needs_fix
   input: "FYI we're forming a team to research how to register account to get cert under CodeLink CPN. There is also volunteer member who wants to take Certified Architect Certificate. \nWill keep you updates on this"
@@ -391,7 +391,7 @@
   include: ["updated"]
   exclude: ["keep you updates"]
 
-# unreviewed: reference drafted by the agent (notes.md example 7)
+# reference: drafted by the agent, reviewed by Leo (notes.md example 7)
 - id: fix-44
   group: needs_fix
   input: "I have interview at 3:00 but please consider me as optional, thanks"
@@ -399,7 +399,7 @@
   include: ["an interview"]
   exclude: ["I have interview"]
 
-# unreviewed: reference drafted by the agent (notes.md example 9)
+# reference: drafted by the agent, reviewed by Leo (notes.md example 9)
 - id: fix-45
   group: needs_fix
   input: "I'm afraid the Oracle here is the whole ERM which is bigger then Oracle DB that Terry is supporting as DBA"
@@ -407,7 +407,7 @@
   include: ["than"]
   exclude: ["bigger then"]
 
-# unreviewed: reference drafted by the agent (notes.md example 11)
+# reference: drafted by the agent, reviewed by Leo (notes.md example 11)
 - id: fix-46
   group: needs_fix
   input: |-
