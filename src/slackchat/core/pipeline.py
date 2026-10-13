@@ -37,6 +37,11 @@ def _new_id() -> str:
     return uuid.uuid4().hex[:12]
 
 
+def _elapsed_seconds(elapsed: float, started: float, timer: Callable[[], float]) -> float:
+    """Wall time of every attempt so far, the one that just ended included."""
+    return elapsed + timer() - started
+
+
 def _dedupe(flags: list[str]) -> list[str]:
     seen: set[str] = set()
     ordered = []
@@ -116,11 +121,11 @@ def process(
                 input_tokens=None,
                 output_tokens=None,
                 cost_usd=None,
-                latency_ms=int(round((elapsed + (timer() - started)) * 1000)),
+                latency_ms=int(round(_elapsed_seconds(elapsed, started, timer) * 1000)),
                 created_at=created_at,
                 error=str(exc),
             )
-        elapsed += timer() - started
+        elapsed = _elapsed_seconds(elapsed, started, timer)
 
         output = sanitize(completion.text)
         changes, changed_ratio = diff_words(text, output)
@@ -144,10 +149,9 @@ def process(
         attempt += 1
         suffix = retry_suffix(violations)
 
-    # TODO: refactor to prevent calling cost_fn twice
-    if cost_fn(completion.model, completion.input_tokens, completion.output_tokens) is None:
-        flags.append(FLAG_UNKNOWN_PRICING)
     cost = cost_fn(completion.model, completion.input_tokens, completion.output_tokens)
+    if cost is None:
+        flags.append(FLAG_UNKNOWN_PRICING)
 
     return Result(
         run_id=run_id,
