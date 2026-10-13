@@ -3,7 +3,7 @@
 
 [provider]
 name  = "anthropic"
-model = "claude-haiku-4-5"
+model = "claude-haiku-5-5"
 
 [limits]
 # Correction only: fraction of input tokens allowed to change before the

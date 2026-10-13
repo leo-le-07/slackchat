@@ -9,7 +9,7 @@ from pathlib import Path
 
 from slackchat.core.types import Limits
 
-DEFAULT_MODEL = "claude-haiku-4-5"
+DEFAULT_MODEL = "claude-haiku-5-5"
 
 
 class ConfigError(RuntimeError):

@@ -8,7 +8,7 @@ from slackchat import config as cfg
 def test_defaults_when_no_file(tmp_path):
     conf = cfg.load_config(tmp_path / "missing.toml")
     assert conf.provider.name == "anthropic"
-    assert conf.provider.model == "claude-haiku-4-5"
+    assert conf.provider.model == "claude-haiku-5-5"
     assert conf.limits.max_changed_ratio == 0.35
     assert conf.limits.max_retries == 1
     assert conf.cli.auto_copy is True
@@ -57,7 +57,7 @@ def test_partial_file_falls_back_per_key(tmp_path):
     conf = cfg.load_config(p)
     assert conf.limits.max_retries == 3
     assert conf.limits.max_changed_ratio == 0.35  # untouched default
-    assert conf.provider.model == "claude-haiku-4-5"
+    assert conf.provider.model == "claude-haiku-5-5"
 
 
 def test_config_path_honours_env(monkeypatch, tmp_path):

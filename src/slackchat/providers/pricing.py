@@ -1,7 +1,7 @@
 """Prices are data, not logic, so that a price change is a one-line edit.
 
 Keys are the model ids the API returns in ``response.model``. As of
-2026-08-23 that is the undated ``claude-haiku-4-5``; ``normalise_model_id``
+2026-08-23 that is the undated ``claude-haiku-5-5``; ``normalise_model_id``
 strips a trailing date anyway, so a dated echo still costs correctly.
 """
 
@@ -11,6 +11,8 @@ import re
 
 # model id -> (USD per 1M input tokens, USD per 1M output tokens)
 PRICES_USD_PER_MTOK: dict[str, tuple[float, float]] = {
+    # Haiku 5.5 base rate (prompts up to 100k tokens; ours are far below).
+    "claude-haiku-5-5": (0.10, 0.50),
     "claude-haiku-4-5": (1.00, 5.00),
 }
 

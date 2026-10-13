@@ -42,3 +42,8 @@ def test_missing_token_counts_are_none_never_zero():
 
 def test_zero_tokens_is_a_real_zero():
     assert cost_usd("claude-haiku-4-5", 0, 0) == 0.0
+
+
+def test_haiku_5_5_is_priced_at_ten_cents_and_fifty():
+    assert PRICES_USD_PER_MTOK["claude-haiku-5-5"] == (0.10, 0.50)
+    assert cost_usd("claude-haiku-5-5", 1000, 400) == 0.0003
