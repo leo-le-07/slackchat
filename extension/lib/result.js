@@ -4,6 +4,9 @@
 // content script (via the manifest's content_scripts order). Classic script:
 // no import/export, so both worlds can load it.
 const DEFAULT_PORT = 8765;
+// A wedged daemon (the Anthropic client has a 10-minute default timeout) must
+// not leave the popup on "Processing…" with its Fix button dead forever.
+const DEFAULT_TIMEOUT_MS = 30000;
 
 function buildSegments(result) {
   // A word diff between Vietnamese and English carries no information.
@@ -33,6 +36,13 @@ function classify(result) {
 
 async function callDaemon(text, settings, fetchFn) {
   const port = settings.port || DEFAULT_PORT;
+  const controller = new AbortController();
+  // A ref'd timer, not AbortSignal.timeout: node unrefs that one, so a caller
+  // waiting only on it would exit before the timeout fires.
+  const timer = setTimeout(
+    () => controller.abort(),
+    settings.timeoutMs || DEFAULT_TIMEOUT_MS,
+  );
   try {
     const response = await fetchFn(`http://127.0.0.1:${port}/process`, {
       method: "POST",
@@ -41,6 +51,7 @@ async function callDaemon(text, settings, fetchFn) {
         "X-Slackchat-Token": settings.token,
       },
       body: JSON.stringify({ text }),
+      signal: controller.signal,
     });
     if (!response.ok) {
       return { ok: false };
@@ -53,6 +64,8 @@ async function callDaemon(text, settings, fetchFn) {
     return { ok: true, result };
   } catch {
     return { ok: false };
+  } finally {
+    clearTimeout(timer);
   }
 }
 

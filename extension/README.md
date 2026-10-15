@@ -74,6 +74,9 @@ are first guesses.
    **Check**: the box must be unchanged and the popup must show the error.
 8. Double-click **Fix**: one request only, not two. Click it on an empty box:
    no popup at all.
+9. The **Fix** button must not sit on top of Slack's own send button. It is
+   placed bottom-right inside the input container; if it overlaps, move it in
+   `content.js`.
 
 ## Known limits
 
@@ -89,3 +92,10 @@ are first guesses.
   not per tab.
 - **No hotkeys, no auto-trigger.** Every request is one click and one Haiku
   call.
+- **Requests give up after 30 seconds** (`DEFAULT_TIMEOUT_MS` in
+  `lib/result.js`), so a wedged daemon cannot leave "Processing…" on the screen
+  forever. The input is untouched when that happens.
+- **If every click gives the generic error while the daemon is running and the
+  token is right**, the request may be blocked before it leaves the browser.
+  The fallback is to add the extension's origin to `[server] allowed_origins`
+  in your config (design doc section 7).

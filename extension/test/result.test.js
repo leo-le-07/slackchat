@@ -126,3 +126,18 @@ test("callDaemon returns ok:false on a body that is not JSON", async () => {
 
   assert.deepEqual(await callDaemon("hi", { token: "t" }, fetchFn), { ok: false });
 });
+
+test("callDaemon gives up when the daemon never answers", async () => {
+  const fetchFn = (_url, options) =>
+    new Promise((_resolve, reject) => {
+      // No signal means no timeout: hang, exactly like a wedged daemon.
+      if (!options.signal) {
+        return;
+      }
+      options.signal.addEventListener("abort", () => reject(new Error("aborted")));
+    });
+
+  assert.deepEqual(await callDaemon("hi", { token: "t", timeoutMs: 20 }, fetchFn), {
+    ok: false,
+  });
+});
