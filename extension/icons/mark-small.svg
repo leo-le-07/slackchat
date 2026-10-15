@@ -1,0 +1,9 @@
+<!-- Small mark: 16px toolbar tile and the in-Slack button. No ring, no
+     tick; at this size they turn to mush. Regenerate with:
+     rsvg-convert -w 16 -h 16 mark-small.svg -o icon16.png -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <rect width="128" height="128" rx="30" fill="#1b7fe3"/>
+  <text x="64" y="93" text-anchor="middle"
+        font-family="Helvetica, Arial, sans-serif" font-weight="bold"
+        font-size="82" fill="#ffffff">S</text>
+</svg>

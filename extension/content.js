@@ -64,12 +64,16 @@ function attach(container) {
   }
 
   const button = document.createElement("button");
-  button.textContent = "Fix";
+  // The small mark: blue tile, white S. Same as icons/icon16.png. No ring or
+  // tick here, they turn to mush at 20px.
+  button.textContent = "S";
   button.title = "slackchat: check this message";
+  button.setAttribute("aria-label", "slackchat: check this message");
   button.setAttribute(
     "style",
-    "position:absolute; right:8px; bottom:8px; z-index:10; font:12px -apple-system,'Segoe UI',sans-serif;" +
-      "padding:2px 8px; border:1px solid #868686; border-radius:4px; background:#fff; color:#1d1c1d; cursor:pointer;",
+    "position:absolute; right:8px; bottom:8px; z-index:10; width:20px; height:20px; padding:0;" +
+      "font:bold 12px -apple-system,'Segoe UI',sans-serif; line-height:1;" +
+      "border:none; border-radius:5px; background:#1b7fe3; color:#fff; cursor:pointer;",
   );
   // Do not steal focus from the editable.
   button.addEventListener("mousedown", (event) => event.preventDefault());

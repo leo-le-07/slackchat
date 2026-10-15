@@ -21,7 +21,8 @@ Thiết kế: `docs/superpowers/specs/2026-10-15-edge-extension-design.md`.
 
 3. **Options** của extension → dán token → **Save**. Port để trống (= 8765).
 
-Sau đó mở `https://app.slack.com`, gõ vào khung chat, bấm **Fix**.
+Sau đó mở `https://app.slack.com`, gõ vào khung chat, bấm nút **S** (ô xanh
+nhỏ cạnh khung gõ).
 
 ## Sau khi khởi động lại máy
 
@@ -45,7 +46,7 @@ Chỉ sửa `background.js` → ⟳ là đủ.
 
 ## Khi có trục trặc
 
-**Không thấy nút Fix.** Kiểm tra xem bạn đã F5 tab Slack sau lần reload gần
+**Không thấy nút S.** Kiểm tra xem bạn đã F5 tab Slack sau lần reload gần
 nhất chưa. Vẫn không thấy → F12 → Console ở tab Slack:
 
 ```js
@@ -97,4 +98,4 @@ lỗi trên Node 22.21). `./scripts/check.sh` không bao gồm JS.
   round trip không.
 - Selector của Slack (`[data-qa="message_input"]`) và đường ghi ngược — mới là
   phỏng đoán.
-- Nút **Fix** có đè lên nút Send của Slack không.
+- Nút **S** có đè lên nút Send của Slack không.
