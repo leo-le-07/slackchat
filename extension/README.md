@@ -1,0 +1,91 @@
+# slackchat Edge extension
+
+A button next to the Slack message box that sends the text to the local
+`slackchat` daemon and shows an inline diff before anything is applied.
+
+Manifest V3, vanilla JS, no build step, no npm dependencies.
+
+- `manifest.json` — MV3 manifest. `storage` permission; host permissions for
+  `https://app.slack.com/*` and `http://127.0.0.1/*`.
+- `lib/result.js` — the daemon client and the diff-segment builder. Classic
+  script, also `require`-able from node. Loaded first, so
+  `SlackchatLib` is visible to the scripts after it.
+- `background.js` — service worker. Owns every network call; reads the token
+  and port from `chrome.storage.local`.
+- `content.js` — the button, the popup, and the read/write of the Slack input.
+  Never talks to `127.0.0.1` itself.
+- `options.html`, `options.js` — the token and port form.
+- `test/result.test.js` — `node:test` tests for `lib/result.js`.
+
+## Run it
+
+1. Start the daemon **from the repo root**, because the token file is written
+   to `<cwd>/.config/server_token` (`server/token.py`, `config.py`):
+
+   ```bash
+   uv run slackchat serve
+   ```
+
+   It prints `X-Slackchat-Token: <token>` on startup; the token is the value
+   after the colon. Keep it running.
+
+2. In Edge, open `edge://extensions`, turn on **Developer mode**, click
+   **Load unpacked**, and pick this `extension/` directory.
+
+3. Open the extension's **Options**, paste the token, and press **Save**.
+   Leave the port empty unless you changed `[server] port` in your config
+   (default 8765).
+
+4. Open `https://app.slack.com`, reload the tab once after loading the
+   extension, then type in the message box and click **Fix**.
+
+Clicking **Fix** shows "Processing…", then either the diff with **Check** and
+**Cancel**, "Nothing to fix", or "Something went wrong. Check that
+`slackchat serve` is running.". **Check** is the only action that writes to
+the box; **Cancel**, an error, and a close all leave it untouched.
+
+## Tests
+
+```bash
+node --test "extension/test/*.test.js"
+```
+
+The glob, not `node --test extension/test/`: in Node 22.21 a bare directory
+argument is treated as an entry module and fails with "Cannot find module".
+
+The Python side is unchanged; `./scripts/check.sh` still gates it.
+
+## Live acceptance checklist
+
+Nothing below has been run yet — it needs a browser and a real Slack session.
+Until it is run, the Slack selectors and the write-back path in `content.js`
+are first guesses.
+
+1. A message with a typo: diff popup; **Check** fills the box; **Cancel**
+   leaves it.
+2. A correct sentence: "Nothing to fix", no **Check**.
+3. A Vietnamese sentence: English output; **Check** applies it.
+4. Stop the daemon: the generic error line, input unchanged.
+5. The last request appears in the `runs` table with `client='server'`
+   (default DB path is under `data/`).
+6. Type `<b>hi</b> & "x" teh` and click: the popup shows those literal
+   characters, no markup.
+7. Type text, click **Fix**, keep typing before the result arrives, then click
+   **Check**: the box must be unchanged and the popup must show the error.
+8. Double-click **Fix**: one request only, not two. Click it on an empty box:
+   no popup at all.
+
+## Known limits
+
+- **Mentions, emoji, and line breaks are unverified.** Slack's input is a rich
+  editor and `content.js` reads `innerText` and writes back with
+  `execCommand("insertText")`. A plain-text round trip may flatten `@mentions`,
+  emoji, or code spans. The first version targets plain text; fix forward when
+  a real message shows what breaks.
+- **Selectors are guesses**: `[data-qa="message_input"]` and the
+  `[contenteditable="true"]` inside it. When Slack changes its markup, the
+  button stops appearing; that is the first thing to re-check.
+- **One daemon per browser profile.** The token and port are global settings,
+  not per tab.
+- **No hotkeys, no auto-trigger.** Every request is one click and one Haiku
+  call.
