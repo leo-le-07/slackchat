@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>slackchat</title>
+    <style>
+      body {
+        font: 14px -apple-system, "Segoe UI", sans-serif;
+        max-width: 32rem;
+        padding: 1.5rem;
+      }
+      label {
+        display: block;
+        margin-bottom: 1rem;
+      }
+      input {
+        display: block;
+        margin-top: 0.25rem;
+        padding: 0.4rem;
+        width: 20rem;
+        font: inherit;
+      }
+      button {
+        padding: 0.4rem 0.9rem;
+        font: inherit;
+      }
+      #saved {
+        margin-left: 0.5rem;
+        color: #0a5c2e;
+      }
+      .hint {
+        color: #616061;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>slackchat</h1>
+    <label>
+      Daemon token
+      <input id="token" type="password" autocomplete="off" />
+    </label>
+    <label>
+      Port
+      <input id="port" type="number" min="1" max="65535" placeholder="8765" />
+    </label>
+    <button id="save">Save</button>
+    <span id="saved"></span>
+    <p class="hint">Run <code>slackchat serve</code> and paste the token it prints.</p>
+    <script src="options.js"></script>
+  </body>
+</html>

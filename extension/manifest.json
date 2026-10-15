@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "slackchat",
+  "version": "0.1.0",
+  "description": "Send the Slack message box to the local slackchat daemon and apply the result.",
+  "permissions": ["storage"],
+  "host_permissions": ["https://app.slack.com/*", "http://127.0.0.1/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://app.slack.com/*"],
+      "js": ["lib/result.js", "content.js"]
+    }
+  ]
+}
