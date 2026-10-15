@@ -67,9 +67,11 @@ chrome.runtime.sendMessage({type:"process", text:"I has finish the task"}).then(
 
 - `{ok: true, result: {...}}` → worker, daemon, token đều ổn; lỗi nằm ở
   `content.js`.
-- `{ok: false}` → token sai, daemon chưa chạy, hoặc request bị chặn trước khi
-  rời browser; cách cuối là thêm origin của extension vào
-  `[server] allowed_origins` trong `.config/config.toml` rồi chạy lại `serve`.
+- Popup báo `slackchat is not running…` → daemon chưa chạy (`reason: "offline"`).
+  Báo `did not answer in 30s` → daemon có chạy nhưng kẹt. Báo `Something went
+  wrong…` → còn lại: token sai, hoặc request bị chặn trước khi rời browser;
+  cách cuối là thêm origin của extension vào `[server] allowed_origins` trong
+  `.config/config.toml` rồi chạy lại `serve`.
 
 **Bấm Check không thay đổi gì, hoặc mất mention / emoji / dấu xuống dòng.**
 Đây là chỗ dễ vỡ nhất (đường ghi ngược vào editor) — ghi lại bạn gõ gì và nhận

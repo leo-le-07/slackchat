@@ -43,8 +43,13 @@ async function callDaemon(text, settings, fetchFn) {
     () => controller.abort(),
     settings.timeoutMs || DEFAULT_TIMEOUT_MS,
   );
+  // Only the request itself gets a reason. A rejection here is the daemon not
+  // listening (or the fetch never left the browser); an abort means it is up
+  // but wedged. Later failures stay generic, so a 401 and a provider error
+  // look the same on purpose.
+  let response;
   try {
-    const response = await fetchFn(`http://127.0.0.1:${port}/process`, {
+    response = await fetchFn(`http://127.0.0.1:${port}/process`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -53,6 +58,12 @@ async function callDaemon(text, settings, fetchFn) {
       body: JSON.stringify({ text }),
       signal: controller.signal,
     });
+  } catch {
+    return { ok: false, reason: controller.signal.aborted ? "timeout" : "offline" };
+  } finally {
+    clearTimeout(timer);
+  }
+  try {
     if (!response.ok) {
       return { ok: false };
     }
@@ -64,8 +75,6 @@ async function callDaemon(text, settings, fetchFn) {
     return { ok: true, result };
   } catch {
     return { ok: false };
-  } finally {
-    clearTimeout(timer);
   }
 }
 

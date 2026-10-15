@@ -89,12 +89,15 @@ test("callDaemon honours a custom port", async () => {
   assert.equal(calls[0].url, "http://127.0.0.1:9000/process");
 });
 
-test("callDaemon returns ok:false when fetch rejects", async () => {
+test("callDaemon reports a daemon that is not listening", async () => {
   const fetchFn = async () => {
     throw new TypeError("Failed to fetch");
   };
 
-  assert.deepEqual(await callDaemon("hi", { token: "t" }, fetchFn), { ok: false });
+  assert.deepEqual(await callDaemon("hi", { token: "t" }, fetchFn), {
+    ok: false,
+    reason: "offline",
+  });
 });
 
 test("callDaemon returns ok:false on status 401", async () => {
@@ -139,5 +142,6 @@ test("callDaemon gives up when the daemon never answers", async () => {
 
   assert.deepEqual(await callDaemon("hi", { token: "t", timeoutMs: 20 }, fetchFn), {
     ok: false,
+    reason: "timeout",
   });
 });

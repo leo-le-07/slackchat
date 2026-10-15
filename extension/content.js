@@ -4,7 +4,13 @@
 // fix-forward rule. task-4 of the plan records what breaks in the live run.
 const INPUT_CONTAINER = '[data-qa="message_input"]';
 const EDITABLE = '[contenteditable="true"]';
-const ERROR_TEXT = "Something went wrong. Check that `slackchat serve` is running.";
+// One line per failure the user can act on. Anything else gets the generic
+// text, which points at the token because that is the usual cause.
+const ERROR_TEXTS = {
+  offline: "slackchat is not running. Start it with `slackchat serve`.",
+  timeout: "slackchat did not answer in 30s. It may be stuck.",
+};
+const ERROR_TEXT = "Something went wrong. Check the token in the extension Options.";
 
 const STYLE = `
   :host { all: initial; }
@@ -129,7 +135,7 @@ function ensurePopup(session) {
     const editable = editableIn(session.container);
     // Leo kept typing: applying now would throw his newer text away.
     if (!editable || editable.innerText !== session.sentText) {
-      render(session, "error");
+      render(session, "stale");
       return;
     }
     writeText(editable, session.result.output);
@@ -151,8 +157,8 @@ function place(session) {
   host.style.bottom = `${Math.max(8, window.innerHeight - rect.top + 8)}px`;
 }
 
-// The four popup states, in one place.
-function render(session, state) {
+// The popup states, in one place.
+function render(session, state, reason) {
   const nodes = ensurePopup(session);
   if (session.host.parentNode !== document.body) {
     document.body.append(session.host);
@@ -180,8 +186,11 @@ function render(session, state) {
   } else if (state === "nochange") {
     nodes.body.textContent = "Nothing to fix";
     nodes.actions.append(nodes.close);
+  } else if (state === "stale") {
+    nodes.body.textContent = "The message changed while checking. Click S again.";
+    nodes.actions.append(nodes.close);
   } else {
-    nodes.body.textContent = ERROR_TEXT;
+    nodes.body.textContent = ERROR_TEXTS[reason] || ERROR_TEXT;
     nodes.actions.append(nodes.close);
   }
 }
@@ -217,7 +226,7 @@ async function start(session) {
   session.pending = false;
 
   if (!response || !response.ok) {
-    render(session, "error");
+    render(session, "error", response && response.reason);
     return;
   }
   session.result = response.result;
